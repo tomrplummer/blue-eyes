@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
     f.match(%r{^(test|spec|features)/})
   end
   spec.bindir        = "bin"
-  spec.executables   = 'frank'
+  spec.executables   = 'frank.rb'
   spec.require_paths = ["lib", "templates"]
 
   # Since the script itself doesn't use external gems, we might not list runtime dependencies here.
