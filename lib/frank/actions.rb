@@ -4,7 +4,7 @@ module Frank
   module Actions
     def self.new name
       snake_name = Frank::TXT::snake_case(name)
-      gem_path = File.expand_path "~/Code/gem/frank" #Gem::Specification::find_by_name('frank').gem_dir
+      gem_path = File.expand_path "~/Code/gem/frank" # Gem::Specification::find_by_name('frank').gem_dir
       source_dir = File.join(gem_path, "templates")
       destination = File.join(".", snake_name)
 
@@ -31,16 +31,27 @@ module Frank
     end
 
     def self.generate_controller name
+      puts "running controller"
       snake_name = Frank::TXT::snake_case(name)
       File.write "./app/controllers/#{snake_name}_controller.rb", Frank::Tmpl::controller(name)
       File.write "./app/views/#{snake_name}_index.haml", Frank::Tmpl::view
 
       conf = File.read "config.ru"
       lines = conf.split "\n"
-      run_index = lines.index{|e| e =~ /^run /}
+      run_index = lines.index { |e| e =~ /^run / }
 
       lines[run_index] = ["use #{name}Controller", lines[run_index]].join("\n")
       File.write "config.ru", lines.join("\n")
+    end
+
+    def self.run args
+      action_type = args.shift
+      g_type = args.shift if action_type == 'g'
+      name = args.shift
+
+      Frank::Actions::new(name) if action_type == 'n'
+      Frank::Actions::generate_model(name, args) if action_type == 'g' && g_type == 'model'
+      Frank::Actions::generate_controller(name) if action_type == 'g' && g_type == 'controller'
     end
   end
 end

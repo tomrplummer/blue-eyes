@@ -7,7 +7,6 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{A Ruby-based project generator for Sinatra applications.}
   spec.description   = %q{Frank generates project scaffolding tailored for Sinatra, incorporating best practices and optional configurations for HAML, Sequel, and TailwindCSS.}
-  spec.homepage      = ""
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
@@ -15,7 +14,7 @@ Gem::Specification.new do |spec|
   end
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
-  spec.require_paths = ["lib"]
+  spec.require_paths = ["lib", "templates"]
 
   # Since the script itself doesn't use external gems, we might not list runtime dependencies here.
   # Only list gems if your script directly requires them to run.
@@ -26,7 +25,7 @@ Gem::Specification.new do |spec|
 
   # Metadata
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
-  spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/USERNAME/frank"
-  spec.metadata["changelog_uri"] = "https://github.com/USERNAME/frank/CHANGELOG.md"
+  # spec.metadata["homepage_uri"] = spec.homepage
+  # spec.metadata["source_code_uri"] = "https://github.com/USERNAME/frank"
+  # spec.metadata["changelog_uri"] = "https://github.com/USERNAME/frank/CHANGELOG.md"
 end
