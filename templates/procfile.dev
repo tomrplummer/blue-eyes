@@ -1,0 +1,2 @@
+web: rackup
+css: bin/tailwindcss -i ./app/styles/application.tailwind.css -o ./app/public/stylesheets/application.css --watch
