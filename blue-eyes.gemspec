@@ -1,7 +1,7 @@
 # blue_eyes.gemspec
 Gem::Specification.new do |spec|
   spec.name          = "blue-eyes"
-  spec.version       = "0.1.0"
+  spec.version       = "0.2.0"
   spec.authors       = ["Tom Plummer"]
   spec.email         = ["tom.plummer@hey.com"]
 

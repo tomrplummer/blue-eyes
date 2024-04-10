@@ -5,7 +5,7 @@ module BlueEyes
   module Actions
     def self.new name
       snake_name = BlueEyes::TXT::snake_case(name)
-      gem_path = File.expand_path Gem::Specification::find_by_name('blue_eyes').gem_dir
+      gem_path = File.expand_path Gem::Specification::find_by_name('blue-eyes').gem_dir
       # gem_path = File.expand_path File.expand_path("~/Code/gem/blue-eyes")
       source_dir = File.join(gem_path, "templates")
       destination = File.join(".", snake_name)
