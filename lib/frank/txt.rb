@@ -1,3 +1,5 @@
+require "active_support/core_ext/string/inflections"
+
 module Frank
   module TXT
     def self.snake_case str
@@ -7,6 +9,14 @@ module Frank
 
     def self.pascalize str
       str.split('_').collect.map(&:capitalize).join
+    end
+
+    def self.singular str
+      str.singularize
+    end
+
+    def self.plural str
+      str.pluralize
     end
   end
 end

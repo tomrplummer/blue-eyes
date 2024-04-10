@@ -37,9 +37,9 @@ module Frank
           end
         end
       end
-      system "mv #{file_name} ./bin/tailwindcss"
-      system "chmod 777 ./bin/tailwindcss"
-      system "./bin/tailwindcss init"
+      system "mv #{file_name} #{Frank::Paths.bin("tailwindcss")}"
+      system "chmod 777 #{Frank::Paths.bin("tailwindcss")}"
+      system "#{Frank::Paths.bin("tailwindcss")} init"
 
       config = File.read "./tailwind.config.js"
       config = config.sub("plugins: [],", "plugins: [require('@tailwindcss/forms'),require('@tailwindcss/typography'),],")
