@@ -1,7 +1,7 @@
 require 'uri'
 require 'net/http'
 
-module Frank
+module BlueEyes
   module Fget
     def self.tailwind
       url = URI('https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-macos-arm64')
@@ -37,9 +37,9 @@ module Frank
           end
         end
       end
-      system "mv #{file_name} #{Frank::Paths.bin("tailwindcss")}"
-      system "chmod 777 #{Frank::Paths.bin("tailwindcss")}"
-      system "#{Frank::Paths.bin("tailwindcss")} init"
+      system "mv #{file_name} #{BlueEyes::Paths.bin("tailwindcss")}"
+      system "chmod 777 #{BlueEyes::Paths.bin("tailwindcss")}"
+      system "#{BlueEyes::Paths.bin("tailwindcss")} init"
 
       config = File.read "./tailwind.config.js"
       config = config.sub("plugins: [],", "plugins: [require('@tailwindcss/forms'),require('@tailwindcss/typography'),],")

@@ -1,4 +1,4 @@
-module Frank
+module BlueEyes
   module Paths
     def self.app(file = nil)
       join "./app", file

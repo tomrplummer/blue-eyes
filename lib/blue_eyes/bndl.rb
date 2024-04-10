@@ -1,4 +1,4 @@
-module Frank
+module BlueEyes
   module Bndl
     BUNDLES = %w[
       sinatra

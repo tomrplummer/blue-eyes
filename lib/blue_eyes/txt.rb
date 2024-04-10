@@ -1,6 +1,6 @@
 require "active_support/core_ext/string/inflections"
 
-module Frank
+module BlueEyes
   module TXT
     def self.snake_case str
       new_str = str[0].downcase + str[1..]

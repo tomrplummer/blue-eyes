@@ -1,4 +1,4 @@
-module Frank
+module BlueEyes
   module Tmpl
     def self.controller class_name
       instance_var_singular = TXT::singular TXT::snake_case(class_name)
@@ -149,13 +149,13 @@ module Frank
 
     def self.model_template model_name
       <<~TEMPLATE
-        class #{Frank::TXT::pascalize model_name} < Sequel::Model
+        class #{BlueEyes::TXT::pascalize model_name} < Sequel::Model
         end
       TEMPLATE
     end
 
     def self.path_helper name, model_name
-      snake_case = Frank::TXT::snake_case name
+      snake_case = BlueEyes::TXT::snake_case name
       <<~TEMPLATE
         module #{name}Paths
           def #{name}_path
