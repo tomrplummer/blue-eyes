@@ -29,7 +29,9 @@ module BlueEyes
     def self.generate_model name, args, belongs_to = nil
       snake_name = BlueEyes::TXT::snake_case(name)
       table_name = BlueEyes::TXT::singular snake_name
-
+      Dir.mkdir BlueEyes::Paths.models unless Dir.exist? BlueEyes::Paths.models
+      Dir.mkdir BlueEyes::Paths.db unless Dir.exist? BlueEyes::Paths.db
+      Dir.mkdir BlueEyes::Paths.migrations unless Dir.exist? BlueEyes::Paths.migrations
       file_name = "#{Time.now.to_i}_create_#{snake_name}.rb"
       File.write BlueEyes::Paths.models("#{table_name}.rb"), BlueEyes::Tmpl::model_template(table_name)
       File.write BlueEyes::Paths.migrations("#{file_name}"), BlueEyes::Tmpl::migration(snake_name, args)

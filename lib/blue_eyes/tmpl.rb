@@ -110,26 +110,45 @@ module BlueEyes
       <<~TEMPLATE
         require "sinatra"
         require "sequel"
+        require "warden"
+        require "securerandom"
         require 'sinatra/reloader' if development?
+        require "./config/warden"
         require_relative './plugins/permitted_params'
+        require_relative './plugins/route_builder'
+        require_relative './plugins/paths'
+        require_relative './helpers/paths_helper'
+        require_relative './helpers/auth_helper'
 
         DB = Sequel.connect("sqlite://#{name}.db")
 
         Dir.glob("./app/{controllers,models}/*.rb").each do |file|
           require file
         end
-
-        Dir.glob( './plugins/paths/*.rb').each do |helper_path|
-          require_relative helper_path
-          helper_module_name = File.basename(helper_path, '.rb').split('_').collect(&:capitalize).join
-          helper_module = Object.const_get(helper_module_name)
-          Sinatra::Base.helpers helper_module
-        end
-
+       
+        enable :sessions
+        use Rack::Session::Cookie , secret: ENV['SESSION_SECRET'], expire_after: 2592000
+ 
+        PathsHelper::run
+        Sinatra::Base.helpers Paths
+        Sinatra::Base.helpers AuthHelpers
         Sequel::Model.plugin PermittedParams
 
-        use HomeController
+        use Warden::Manager do |manager|
+          manager.serialize_into_session do |user|
+            user.id  # Assuming user has an id method. Adjust according to your user model.
+          end
 
+          manager.serialize_from_session do |id|
+            User.find(id: :id)  # Assuming User.find(id) method exists and returns a user object or hash.
+          end
+          manager.default_strategies :password
+          manager.failure_app = SessionsController
+        end
+
+        use HomeController
+        use SessionsController
+        use UsersController
         run Sinatra::Application
       TEMPLATE
     end

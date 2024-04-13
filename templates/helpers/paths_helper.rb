@@ -6,8 +6,5 @@ module PathsHelper
   include Paths
   def self.run
     # put resources here
-    resources :posts
-    resources :comments, :posts
-    resources :likes, :posts, :comments
   end
 end

@@ -1,0 +1,21 @@
+%form{action: "/user/profile/#{@user[:id]}", method: :post}
+  %input{type: :hidden, value: :put, name: "_method"}
+  %div{style: "width: 20rem"}
+    %div.stack-md
+      %a.link{style: "font-size: 1rem;", href: "/logout"}= "Logout"
+      %label.form-control
+        %div.label
+          %span.label-text= "Full Name"
+        %input.input.input-bordered{value: @user[:fullname], :name => :fullname, :placeholder => "Full Name"}
+
+      %label.form-control
+        %div.label
+          %span.label-text= "Email"
+        %input.input.input-bordered{value: @user[:email], :name => :email, :placeholder => :email}
+      %label.form-control
+        %div.label
+          %span.label-text= "Password"
+        %input.input.input-bordered{type: :password, :name => :password, :placeholder => :password}
+      %div.stack-lg
+        %div.flex.flex-row.justify-center
+          %button.btn.btn-ghost.fancy Submit

@@ -9,9 +9,11 @@ Gem::Specification.new do |spec|
   spec.description   = %q{BlueEyes generates project scaffolding tailored for Sinatra, incorporating best practices and optional configurations for HAML, Sequel, and TailwindCSS.}
   spec.license       = "MIT"
 
-  spec.files         = `git ls-files -z`.split("\x0").reject do |f|
-    f.match(%r{^(test|spec|features)/})
-  end
+  # spec.files         = `git ls-files -z`.split("\x0").reject do |f|
+  #   f.match(%r{^(test|spec|features)/})
+  # end
+  spec.files = Dir.glob(["bin/*", "lib/**/*", "templates/**/*", ".templates/db/migrations", ".templates/app/models"])
+
   spec.bindir        = "bin"
   spec.executables   = 'blue-eyes'
   spec.require_paths = ["lib", "templates"]

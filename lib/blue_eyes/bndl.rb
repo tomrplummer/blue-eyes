@@ -1,3 +1,4 @@
+
 module BlueEyes
   module Bndl
     BUNDLES = %w[
@@ -8,6 +9,9 @@ module BlueEyes
       sequel
       puma
       foreman
+      activesupport
+      warden
+      bcrypt
     ].freeze
 
     def self.add bundle
