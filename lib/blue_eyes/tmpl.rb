@@ -118,7 +118,7 @@ module BlueEyes
         require_relative './plugins/route_builder'
         require_relative './plugins/paths'
         require_relative './helpers/paths_helper'
-        require_relative './helpers/auth_helper'
+        require_relative './helpers/auth_helpers'
 
         DB = Sequel.connect("sqlite://#{name}.db")
 
