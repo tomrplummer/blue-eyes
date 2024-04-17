@@ -4,7 +4,7 @@ Sequel.migration do
       primary_key :id
       String :full_name
       String :username
-      String :password
+      String :password_hash
     end 
   end
 end

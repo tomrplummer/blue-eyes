@@ -29,8 +29,11 @@ class UsersController < ApplicationController
   put "/user/profile/:id" do |id|
     user = User.find(:id => id)
     p = {
-      :fullname => params[:fullname],
+      :full_name => params[:full_name],
     }
+    if !params[:password].nil? && params[:password].length > 0
+      p.merge({:password_hash => BCrypt::Password.create(params[:password])})
+    end
     user.update User.permitted(p)
     redirect "/user/profile/#{id}"
   end

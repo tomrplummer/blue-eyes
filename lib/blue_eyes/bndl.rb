@@ -12,6 +12,8 @@ module BlueEyes
       activesupport
       warden
       bcrypt
+      jwt
+      dotenv
     ].freeze
 
     def self.add bundle

@@ -6,12 +6,12 @@
       %label.form-control
         %div.label
           %span.label-text= "Full Name"
-        %input.input.input-bordered{value: @user[:fullname], :name => :fullname, :placeholder => "Full Name"}
+        %input.input.input-bordered{value: @user[:full_name], :name => :full_name, :placeholder => "Full Name"}
 
       %label.form-control
         %div.label
           %span.label-text= "Email"
-        %input.input.input-bordered{value: @user[:email], :name => :email, :placeholder => :email}
+        %input.input.input-bordered{value: @user[:username], :name => :username, :placeholder => :email}
       %label.form-control
         %div.label
           %span.label-text= "Password"

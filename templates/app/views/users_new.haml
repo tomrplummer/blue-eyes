@@ -1,14 +1,14 @@
-%form{:action => users_path, :method => "post"}
+%form{:action => "/user", :method => "post"}
   %div.shadow-lg.stack-md.rounded-md.bg-neutral.text-neutral-content{style: "padding: 4rem; border-radius: .5rem; max-width: 30rem; margin:auto"}
     %span= "Sign Up"
     %label.form-control
       %div.label
         %span.label-text.text-neutral-content= "Email"
-      %input.input.input-bordered{:name => :email, :placeholder => :email}
+      %input.input.input-bordered{:style => "color: hsl(var(--n)); background-color: hsl(var(--nc))", :name => :username}
     %label.form-control
       %div.label
         %span.label-text.text-neutral-content= "Password"
-      %input.input.input-bordered{type: :password, :name => :password, :placeholder => :email}
+      %input.input.input-bordered{:style => "color: hsl(var(--n)); background-color: hsl(var(--nc))", type: :password, :name => :password}
     %div.stack-lg.mt-12
       %div.flex.flex-row.justify-center
         %button.btn.btn-accent.w-56 Submit

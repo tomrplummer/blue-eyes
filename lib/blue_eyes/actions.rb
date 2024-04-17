@@ -1,5 +1,6 @@
 require "rubygems"
 require "fileutils"
+require "securerandom"
 
 module BlueEyes
   module Actions
@@ -16,24 +17,33 @@ module BlueEyes
 
       Dir.chdir destination
 
+      env_file = BlueEyes::Tmpl.env_file SecureRandom.hex(64), snake_name
+
+
       # File.write BlueEyes::Paths.views("home_index.haml"), BlueEyes::Tmpl::view
       # File.write BlueEyes::Paths.controllers("home_controller.rb"), BlueEyes::Tmpl::controller("Home")
       File.write "./Gemfile", BlueEyes::Tmpl::gem_file
       File.write "./config.ru", BlueEyes::Tmpl::config(snake_name)
+      File.write "./.env", env_file
 
       BlueEyes::Bndl::add_all
 
       BlueEyes::Fget::tailwind
 
-      system "sequel ./db/migrations/#{snake_name}.db"
+      puts "Run migration for users setup before launching site"
+      puts "---------------------------------------------------"
+      puts "cd #{snake_name}"
+      puts "sequel ./db/migrations sqlite://#{snake_name}.db"
+      puts "bin/dev"
+      system "sequel -m ./db/migrations/ sqlite://#{snake_name}.db"
     end
 
     def self.migrate
-      system "sequel -m ./db/migrations sqlite::/#{File.basename(Dir.pwd)}.db"
+      exec "sequel -m ./db/migrations sqlite::/#{File.basename(Dir.pwd)}.db"
     end
 
     def self.db
-      system "sequel sqlite::/#{File.basename(Dir.pwd)}.db"
+      exec "sequel sqlite::/#{File.basename(Dir.pwd)}.db"
     end
 
     def self.generate_model name, args, belongs_to = nil
@@ -84,8 +94,8 @@ module BlueEyes
 
       BlueEyes::Actions::new(name) if action_type == 'n' || action_type == "new"
       BlueEyes::Actions::generate_model(name, args, belongs_to) if (action_type == 'g' || action_type == "generate" || action_type == "gen")  && (g_type == 'model' || g_type == "all")
-      BlueEyes::Actions::migrate if action_type == "migrate"
-      BlueEyes::Actions::db if action_type == "db"
+      # BlueEyes::Actions::migrate if action_type == "migrate"
+      # BlueEyes::Actions::db if action_type == "db"
       # BlueEyes::Actions::generate_controller(name) if action_type == 'g' && g_type == 'controller'
     end
   end
