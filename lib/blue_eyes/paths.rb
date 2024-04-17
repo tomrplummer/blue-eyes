@@ -5,43 +5,58 @@ module BlueEyes
     end
 
     def self.controllers(file = nil)
-      join "./app/controllers", file
+      dir = File.join(%w[ . app controllers ])
+      join dir, file
     end
 
     def self.models(file = nil)
-      join "./app/models", file
+      dir = File.join(%w[ . app models ])
+      join dir, file
     end
 
     def self.styles(file = nil)
-      join "./app/styles", file
+      dir = File.join(%w[ . app styles ])
+      join dir, file
     end
 
     def self.views(file = nil)
-      join "./app/views", file
+      dir = File.join(%w[ . app views ])
+      join dir, file
     end
 
     def self.bin(file = nil)
-      join "./bin", file
+      dir = File.join(%w[ . bin ])
+      join dir, file
     end
 
     def self.db(file = nil)
-      join "./db", file
+      dir = File.join(%w[ . db ])
+      join dir, file
     end
 
     def self.migrations(file = nil)
-      join "./db/migrations", file
+      dir = File.join(%w[ . db migrations ])
+      join dir, file
     end
 
     def self.public(file = nil)
-      join "./public", file
+      dir = File.join(%w[ . public ])
+      join dir, file
     end
 
     def self.stylesheets(file = nil)
-      join "./public/stylesheets", file
+      dir = File.join(%w[ . public stylesheets ])
+      join dir, file
     end
 
     def self.paths_plugins(file = nil)
-      join "./plugins/paths", file
+      dir = File.join(%w[ . plugins paths ])
+      join dir, file
+    end
+
+    def self.bundle_config(file = nil)
+      dir = File.join(%w[ . .bundle ])
+      join dir, file
     end
 
     def self.join dir, file

@@ -2,7 +2,7 @@ module BlueEyes
   module Tmpl
     def self.bundle_config
       <<~TEMPLATE
-        BUNDLE_PATH: "vendor/bundle"
+        BUNDLE_PATH: "#{File.join %w[ vendor bundle ]}"
         BUNDLE_WITHOUT: "development:test"
         BUNDLE_DEPLOYMENT: "true"
         BUNDLE_FROZEN: "false"
