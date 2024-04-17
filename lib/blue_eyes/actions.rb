@@ -17,6 +17,9 @@ module BlueEyes
 
       Dir.chdir destination
 
+      Dir.mkdir "./.bundle"
+      File.write "./.bundle/config", BlueEyes::Tmpl.bundle_config
+
       env_file = BlueEyes::Tmpl.env_file SecureRandom.hex(64), snake_name
 
 

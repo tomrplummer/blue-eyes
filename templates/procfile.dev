@@ -1,2 +1,2 @@
-web: rackup
+web: bundle exec rackup
 css: bin/tailwindcss -i ./app/styles/application.tailwind.css -o ./public/stylesheets/application.css --watch

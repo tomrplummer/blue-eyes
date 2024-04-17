@@ -1,5 +1,13 @@
 module BlueEyes
   module Tmpl
+    def self.bundle_config
+      <<~TEMPLATE
+        BUNDLE_PATH: "vendor/bundle"
+        BUNDLE_WITHOUT: "development:test"
+        BUNDLE_DEPLOYMENT: "true"
+        BUNDLE_FROZEN: "false"
+      TEMPLATE
+    end
     def self.env_file secret, db
       <<~TEMPLATE
         JWT_SECRET=#{secret}

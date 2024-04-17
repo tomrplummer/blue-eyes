@@ -14,6 +14,7 @@ module BlueEyes
       bcrypt
       jwt
       dotenv
+      sqlite3
     ].freeze
 
     def self.add bundle
