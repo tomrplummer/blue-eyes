@@ -4,10 +4,10 @@ require "securerandom"
 
 module BlueEyes
   module Actions
-    def self.new name
+    def self.new name, db = nil
       snake_name = BlueEyes::TXT::snake_case(name)
       gem_path = File.expand_path Gem::Specification::find_by_name('blue-eyes').gem_dir
-      # gem_path = File.expand_path File.expand_path("~/Code/gem/blue-eyes")
+
       source_dir = File.join(gem_path, "templates")
       destination = File.join(".", snake_name)
 
@@ -20,8 +20,11 @@ module BlueEyes
       Dir.mkdir BlueEyes::Paths.bundle_config
       File.write BlueEyes::Paths.bundle_config("config"), BlueEyes::Tmpl.bundle_config
 
-      env_file = BlueEyes::Tmpl.env_file SecureRandom.hex(64), snake_name
+      env_file, connection_string = BlueEyes::Tmpl.env_file SecureRandom.hex(64), snake_name, db
 
+      if db == "postgres"
+        system "createdb #{snake_name}"
+      end
 
       # File.write BlueEyes::Paths.views("home_index.haml"), BlueEyes::Tmpl::view
       # File.write BlueEyes::Paths.controllers("home_controller.rb"), BlueEyes::Tmpl::controller("Home")
@@ -29,16 +32,16 @@ module BlueEyes
       File.write "./config.ru", BlueEyes::Tmpl::config(snake_name)
       File.write "./.env", env_file
 
-      BlueEyes::Bndl::add_all
+      BlueEyes::Bndl::add_all db
 
       BlueEyes::Fget::tailwind
 
       puts "Run migration for users setup before launching site"
       puts "---------------------------------------------------"
       puts "cd #{snake_name}"
-      puts "sequel ./db/migrations sqlite://#{snake_name}.db"
+      puts "sequel ./db/migrations #{connection_string}"
       puts "bin/dev"
-      system "sequel -m ./db/migrations/ sqlite://#{snake_name}.db"
+      system "sequel -m ./db/migrations/ #{connection_string}"
     end
 
     def self.migrate

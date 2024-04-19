@@ -8,11 +8,20 @@ module BlueEyes
         BUNDLE_FROZEN: "false"
       TEMPLATE
     end
-    def self.env_file secret, db
-      <<~TEMPLATE
+    def self.env_file secret, db, db_connector
+      connection_string = nil
+
+      if db_connector == "postgres"
+        connection_string = "postgres://localhost/#{db}"
+      else
+        connection_string = "sqlite://#{db}.db"
+      end
+
+      template = <<~TEMPLATE
         JWT_SECRET=#{secret}
-        DATABASE_URL=sqlite://#{db}.db
+        DATABASE_URL=#{connection_string}
       TEMPLATE
+      return template, connection_string
     end
     def self.controller class_name
       instance_var_singular = TXT::singular TXT::snake_case(class_name)

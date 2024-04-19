@@ -1,7 +1,14 @@
 
 module BlueEyes
   module Bndl
-    BUNDLES = %w[
+
+
+    def self.add bundle
+      system "bundle add #{bundle}"
+    end
+
+    def self.add_all db = nil
+      gems = %w[
       sinatra
       sinatra-contrib
       rackup
@@ -14,15 +21,11 @@ module BlueEyes
       bcrypt
       jwt
       dotenv
-      sqlite3
-    ].freeze
+    ]
 
-    def self.add bundle
-      system "bundle add #{bundle}"
-    end
+      gems << (db == "postgres" ? "pg" : "sqlite3")
 
-    def self.add_all
-      BUNDLES.each do |bundle|
+      gems.each do |bundle|
         system "bundle add #{bundle}"
       end
     end

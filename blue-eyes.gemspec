@@ -21,6 +21,10 @@ Gem::Specification.new do |spec|
   # Since the script itself doesn't use external gems, we might not list runtime dependencies here.
   # Only list gems if your script directly requires them to run.
 
+  # Runtime dependencies
+  spec.add_runtime_dependency "thor"
+  spec.add_runtime_dependency "activesupport"
+
   # Development dependencies
   spec.add_development_dependency "rake"
   spec.add_development_dependency "bundler"
@@ -28,6 +32,6 @@ Gem::Specification.new do |spec|
   # Metadata
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
   # spec.metadata["homepage_uri"] = spec.homepage
-  # spec.metadata["source_code_uri"] = "https://github.com/USERNAME/blue_eyes"
+  spec.metadata["source_code_uri"] = "https://github.com/tomrplummer/blue_eyes"
   # spec.metadata["changelog_uri"] = "https://github.com/USERNAME/blue_eyes/CHANGELOG.md"
 end

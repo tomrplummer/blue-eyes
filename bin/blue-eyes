@@ -1,4 +1,21 @@
 #!/usr/bin/env ruby
+
+require 'thor'
 require_relative '../lib/blue_eyes'
 
-BlueEyes::Actions::run ARGV
+class Cli < Thor
+  desc "cli new <Name> [options]", "Generate projects and code for Sinatra"
+  method_option :db, type: :string, default: "sqlite"
+
+  def new(name)
+    BlueEyes::Actions.new name, options[:db]
+  end
+
+  method_option :fields, type: :array, default: []
+  desc "cli generate <Name> [options]", "Generate models, views, controllers and migrations for Sinatra/Sequel/haml"
+  def generate(name)
+    BlueEyes::Actions.generate_model name, options[:fields]
+  end
+end
+
+Cli.start(ARGV)
