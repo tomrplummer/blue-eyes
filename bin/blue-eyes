@@ -12,9 +12,13 @@ class Cli < Thor
   end
 
   method_option :fields, type: :array, default: []
-  desc "cli generate <Name> [options]", "Generate models, views, controllers and migrations for Sinatra/Sequel/haml"
+  method_option :belongs_to, type: :string
+  method_option :as, type: :string
+  method_option :only, type: :array
+  desc "cli generate <Name> [options]",
+       "Generate models, views, controllers and migrations for Sinatra/Sequel/haml"
   def generate(name)
-    BlueEyes::Actions.generate_model name, options[:fields]
+    BlueEyes::Actions.generate_model name, options
   end
 end
 

@@ -52,7 +52,7 @@ module BlueEyes
       exec "sequel sqlite::/#{File.basename(Dir.pwd)}.db"
     end
 
-    def self.generate_model name, args, belongs_to = nil
+    def self.generate_model name, options = {}
       snake_name = BlueEyes::TXT::snake_case(name)
       table_name = BlueEyes::TXT::singular snake_name
       Dir.mkdir BlueEyes::Paths.models unless Dir.exist? BlueEyes::Paths.models
@@ -60,9 +60,9 @@ module BlueEyes
       Dir.mkdir BlueEyes::Paths.migrations unless Dir.exist? BlueEyes::Paths.migrations
       file_name = "#{Time.now.to_i}_create_#{snake_name}.rb"
       File.write BlueEyes::Paths.models("#{table_name}.rb"), BlueEyes::Tmpl::model_template(table_name)
-      File.write BlueEyes::Paths.migrations("#{file_name}"), BlueEyes::Tmpl::migration(snake_name, args)
+      File.write BlueEyes::Paths.migrations("#{file_name}"), BlueEyes::Tmpl::migration(snake_name, options[:fields])
 
-      self.generate_controller name
+      self.generate_controller name, options
       # self.generate_paths_helper name, belongs_to
     end
 
@@ -73,10 +73,10 @@ module BlueEyes
       File.write BlueEyes::Paths.paths_plugins("#{snake_name}_helper.rb"), BlueEyes::Tmpl.paths_helper(name, singular, belongs_to)
     end
 
-    def self.generate_controller name
+    def self.generate_controller name, options
       snake_name = BlueEyes::TXT::snake_case(name)
-      File.write BlueEyes::Paths.controllers("#{snake_name}_controller.rb"), BlueEyes::Tmpl::controller(name)
-      File.write BlueEyes::Paths.controllers("#{snake_name}_controller.rb"), BlueEyes::Tmpl::controller(name)
+      # File.write BlueEyes::Paths.controllers("#{snake_name}_controller.rb"), BlueEyes::Tmpl::controller(name)
+      File.write BlueEyes::Paths.controllers("#{snake_name}_controller.rb"), BlueEyes::Tmpl::controller(name, options)
       File.write BlueEyes::Paths.views("#{snake_name}_index.haml"), BlueEyes::Tmpl::view
 
       conf = File.read "config.ru"
