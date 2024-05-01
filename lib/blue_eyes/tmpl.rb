@@ -1,8 +1,10 @@
-require_relative "./routes"
+require_relative "routes"
+require_relative "txt"
 module BlueEyes
   module Tmpl
     extend Routes
-    def self.bundle_config
+    include TXT
+    def bundle_config
       <<~TEMPLATE
         BUNDLE_PATH: "#{File.join %w[ vendor bundle ]}"
         BUNDLE_WITHOUT: "development:test"
@@ -10,7 +12,7 @@ module BlueEyes
         BUNDLE_FROZEN: "false"
       TEMPLATE
     end
-    def self.env_file secret, db, db_connector
+    def env_file secret, db, db_connector
       connection_string = nil
 
       if db_connector == "postgres"
@@ -26,11 +28,11 @@ module BlueEyes
       return template, connection_string
     end
 
-    def self.db_call class_name, belongs_to, route
+    def db_call class_name, belongs_to, route
       model_name = get_model_name class_name
       foreign_key = get_foreign_key_name belongs_to
-      instance_var_singular = TXT::singular TXT::snake_case(class_name)
-      instance_var_plural = TXT::plural TXT::snake_case(class_name)
+      instance_var_singular = singular snake_case(class_name)
+      instance_var_plural = plural snake_case(class_name)
 
       case route
       when :index
@@ -58,75 +60,75 @@ module BlueEyes
       end
     end
 
-    def self.index_action class_name, options
+    def index_action class_name, options
       <<~TEMPLATE
         get :index do
             #{db_call class_name, options[:belongs_to], :index}
-            haml :#{TXT::snake_case class_name}_index
+            haml :#{snake_case class_name}_index
           end
       TEMPLATE
     end
 
-    def self.new_action class_name, options
+    def new_action class_name, options
       <<~TEMPLATE
         get :new do
             #{db_call class_name, options[:belongs_to], :new}
-            haml :#{TXT::snake_case class_name}_new
+            haml :#{snake_case class_name}_new
           end
       TEMPLATE
     end
 
-    def self.show_action class_name, options
+    def show_action class_name, options
       <<~TEMPLATE
         get :show do |id|
             #{db_call class_name, options[:belongs_to], :show}
-            haml :#{TXT::snake_case class_name}_show
+            haml :#{snake_case class_name}_show
           end
       TEMPLATE
     end
 
-    def self.edit_action class_name, options
+    def edit_action class_name, options
       <<~TEMPLATE
         get :edit do |id|
             #{db_call class_name, options[:belongs_to], :edit}
-            haml :#{TXT::snake_case class_name}_edit
+            haml :#{snake_case class_name}_edit
           end
       TEMPLATE
     end
 
-    def self.create_action class_name, options
+    def create_action class_name, options
       <<~TEMPLATE
         post :create do
             #{options[:instance_var_singular]} = #{db_call class_name, options[:belongs_to], :create}
-            redirect "/#{TXT::snake_case class_name}/\#{#{options[:instance_var_singular]}[:id]}"
+            redirect "/#{snake_case class_name}/\#{#{options[:instance_var_singular]}[:id]}"
           end
       TEMPLATE
     end
 
-    def self.update_action class_name, options
+    def update_action class_name, options
       <<~TEMPLATE
         put :update do |id|
             #{db_call class_name, options[:belongs_to], :update}
             #{options[:instance_var_singular]}.update #{options[:model_name]}.permitted(params)
-            redirect "/#{TXT::snake_case class_name}/\#{params[:id]}"
+            redirect "/#{snake_case class_name}/\#{params[:id]}"
           end
       TEMPLATE
     end
 
-    def self.destroy_action class_name, options
+    def destroy_action class_name, options
       <<~TEMPLATE
         delete :destroy do |id|
             #{options[:instance_var_singular]} = #{options[:model_name]}.find(:id => id)
             #{options[:instance_var_singular]}.destroy
-            redirect "/#{TXT::snake_case class_name}"
+            redirect "/#{snake_case class_name}"
           end
       TEMPLATE
     end
 
-    def self.controller class_name, options
-      instance_var_singular = TXT::singular TXT::snake_case(class_name)
-      instance_var_plural = TXT::plural TXT::snake_case(class_name)
-      model_name = TXT::singular class_name
+    def controller class_name, options
+      instance_var_singular = singular snake_case(class_name)
+      instance_var_plural = plural snake_case(class_name)
+      model_name = singular class_name
       options = options.merge({
                       :instance_var_singular => instance_var_singular,
                       :instance_var_plural => instance_var_plural,
@@ -143,27 +145,27 @@ module BlueEyes
         require "haml"
 
         class #{class_name}Controller < ApplicationController
-          base_name :#{TXT::snake_case(class_name).to_sym}
-          belongs_to #{options[:belongs_to] ? ":" + TXT::snake_case(options[:belongs_to]) : "nil"}
-          as #{options[:as] ? ":" + TXT::snake_case(options[:as]) : "nil"}
+          base_name :#{snake_case(class_name).to_sym}
+          belongs_to #{options[:belongs_to] ? ":" + snake_case(options[:belongs_to]) : "nil"}
+          as #{options[:as] ? ":" + snake_case(options[:as]) : "nil"}
 
-          #{options[:only].include?(:index) ? self.index_action(class_name, options) : "\# :index not created\n"}
-          #{options[:only].include?(:new) ? self.new_action(class_name, options) : "\# :new not created\n"}
-          #{options[:only].include?(:show) ? self.show_action(class_name, options) : "\# :show not created\n"}
-          #{options[:only].include?(:edit) ? self.edit_action(class_name, options) : "\# :edit not created\n"}
-          #{options[:only].include?(:create) ? self.create_action(class_name, options) : "\# :create not created\n"}
-          #{options[:only].include?(:update) ? self.update_action(class_name, options) : "\# :update not created\n"}
-          #{options[:only].include?(:destroy) ? self.destroy_action(class_name, options) : "\# :destroy not created\n"}
+          #{options[:only].include?(:index) ? index_action(class_name, options) : "\# :index not created\n"}
+          #{options[:only].include?(:new) ? new_action(class_name, options) : "\# :new not created\n"}
+          #{options[:only].include?(:show) ? show_action(class_name, options) : "\# :show not created\n"}
+          #{options[:only].include?(:edit) ? edit_action(class_name, options) : "\# :edit not created\n"}
+          #{options[:only].include?(:create) ? create_action(class_name, options) : "\# :create not created\n"}
+          #{options[:only].include?(:update) ? update_action(class_name, options) : "\# :update not created\n"}
+          #{options[:only].include?(:destroy) ? destroy_action(class_name, options) : "\# :destroy not created\n"}
         end
       TEMPLATE
     end
 
-    def self.paths_helper class_name, singular_name, belongs_to = nil
-      plural_name = TXT::plural(singular_name)
+    def paths_helper class_name, singular_name, belongs_to = nil
+      plural_name = plural(singular_name)
       if belongs_to.nil?
         <<~TEMPLATE
           module #{class_name}Helper
-            def #{TXT::singular(singular_name)}_path model = nil
+            def #{singular(singular_name)}_path model = nil
               "/#{plural_name}/\#{model[:id]}"
             end
 
@@ -171,11 +173,11 @@ module BlueEyes
               "/#{plural_name}"
             end
 
-            def new_#{TXT::singular(singular_name)}_path
+            def new_#{singular(singular_name)}_path
               "/#{plural_name}/new"
             end
 
-            def edit_#{TXT::singular(singular_name)}_path model = nil
+            def edit_#{singular(singular_name)}_path model = nil
               "/#{plural_name}/\#{model[:id]}/edit"
             end
           end
@@ -187,7 +189,7 @@ module BlueEyes
               #{!belongs_to.nil? ? "\"/#{belongs_to}/\#{base_model[:id]}\"" : ""}
             end
 
-            def #{TXT::singular(singular_name)}_path base_model, model = nil
+            def #{singular(singular_name)}_path base_model, model = nil
               path(base_model) + "/#{plural_name}/\#{model[:id]}"
             end
 
@@ -195,11 +197,11 @@ module BlueEyes
               path(base_model) + "/#{plural_name}"
             end
 
-            def new_#{TXT::singular(singular_name)}_path base_model
+            def new_#{singular(singular_name)}_path base_model
               path(base_model) + "/#{plural_name}/new"
             end
 
-            def edit_#{TXT::singular(singular_name)}_path base_model, model = nil
+            def edit_#{singular(singular_name)}_path base_model, model = nil
               path(base_model) + "/#{plural_name}/\#{model[:id]}/edit"
             end
           end
@@ -207,21 +209,21 @@ module BlueEyes
       end
     end
 
-    def self.gem_file
+    def gem_file
       <<~TEMPLATE
         source 'https://rubygems.org'
         ruby "#{RUBY_VERSION}"
       TEMPLATE
     end
 
-    def self.view
+    def view
       <<~TEMPLATE
         .main.w-56.mx-auto
           %h1= "Coming soon"
       TEMPLATE
     end
 
-    def self.config name
+    def config name
       <<~TEMPLATE
         require "sinatra"
         require "sequel"
@@ -256,11 +258,11 @@ module BlueEyes
       TEMPLATE
     end
 
-    def self.migration table_name, columns
+    def migration table_name, columns
       <<~TEMPLATE
         Sequel.migration do
           change do
-            create_table(:#{TXT::plural(table_name)}) do
+            create_table(:#{plural(table_name)}) do
               primary_key :id
               #{columns.map { |column| "#{column.split(":")[0]} :#{column.split(":")[1]}" }.join("\n#{" " * 6}")}
             end
@@ -269,15 +271,15 @@ module BlueEyes
       TEMPLATE
     end
 
-    def self.model_template model_name
+    def model_template model_name
       <<~TEMPLATE
-        class #{BlueEyes::TXT::pascalize model_name} < Sequel::Model
+        class #{pascalize model_name} < Sequel::Model
         end
       TEMPLATE
     end
 
-    def self.path_helper name, model_name
-      snake_case = BlueEyes::TXT::snake_case name
+    def path_helper name, model_name
+      snake_case = snake_case name
       <<~TEMPLATE
         module #{name}Paths
           def #{name}_path
@@ -289,13 +291,13 @@ module BlueEyes
       TEMPLATE
     end
 
-    def self.get_model_name(class_name)
+    def get_model_name(class_name)
       class_name.singularize
     end
 
-    def self.get_foreign_key_name(belongs_to)
+    def get_foreign_key_name(belongs_to)
       if belongs_to
-        "#{TXT::snake_case(belongs_to.to_s.singularize)}_id"
+        "#{snake_case(belongs_to.to_s.singularize)}_id"
       else
         ""
       end

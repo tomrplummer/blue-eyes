@@ -8,5 +8,11 @@ require_relative './blue_eyes/bndl'
 require_relative './blue_eyes/routes'
 
 module BlueEyes
-
+  include Tmpl
+  include TXT
+  include Fget
+  include Actions
+  include Paths
+  include Bndl
+  include Routes
 end

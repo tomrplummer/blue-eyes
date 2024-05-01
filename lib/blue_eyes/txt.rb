@@ -2,20 +2,20 @@ require "active_support/core_ext/string/inflections"
 
 module BlueEyes
   module TXT
-    def self.snake_case str
+    def snake_case str
       new_str = str[0].downcase + str[1..]
       new_str.gsub(/([A-Z])/, '_\1').downcase
     end
 
-    def self.pascalize str
+    def pascalize str
       str.split('_').collect.map(&:capitalize).join
     end
 
-    def self.singular str
+    def singular str
       str.singularize
     end
 
-    def self.plural str
+    def plural str
       str.pluralize
     end
   end
