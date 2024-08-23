@@ -5,8 +5,8 @@ require_relative '../lib/blue_eyes'
 
 class Cli < Thor
   include BlueEyes
-  desc "cli new <Name> [options]", "Generate projects and code for Sinatra"
-  method_option :db, type: :string, default: "sqlite"
+  desc 'new <Name> [options]', 'Generate projects and code for Sinatra'
+  method_option :db, type: :string, default: 'sqlite'
 
   def new(name)
     new_project name, options[:db]
@@ -16,10 +16,25 @@ class Cli < Thor
   method_option :belongs_to, type: :string
   method_option :as, type: :string
   method_option :only, type: :array
-  desc "cli generate <Name> [options]",
-       "Generate models, views, controllers and migrations for Sinatra/Sequel/haml"
+  desc 'generate <Name> [options]',
+       'Generate models, views, controllers and migrations for Sinatra/Sequel/haml'
   def generate(name)
     generate_model name, options
+  end
+
+  method_option :fields, type: :array, default: []
+  method_option :belongs_to, type: :string
+  method_option :as, type: :string
+  method_option :only, type: :array
+  desc 'g <Name> [options]',
+       'Generate models, views, controllers and migrations for Sinatra/Sequel/haml'
+  def g(name)
+    generate_model name, options
+  end
+
+  desc 'migrate', 'Runs db migrate'
+  def migrate
+    Migrate.migrate
   end
 end
 

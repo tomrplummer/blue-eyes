@@ -1,7 +1,7 @@
-require "haml"
+require 'haml'
 
-class HomeController < ApplicationController 
-  get "/" do
+class HomeController < ApplicationController
+  get '/' do
     haml :home_index
   end
 end

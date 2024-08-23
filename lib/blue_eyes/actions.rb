@@ -1,12 +1,12 @@
-require "rubygems"
-require "fileutils"
-require "securerandom"
-require_relative "tmpl"
-require_relative "txt"
-require_relative "actions/controller"
-require_relative "actions/model"
-require_relative "actions/new_project"
-require_relative "actions/migrate"
+require 'rubygems'
+require 'fileutils'
+require 'securerandom'
+require_relative 'tmpl'
+require_relative 'txt'
+require_relative 'actions/controller'
+require_relative 'actions/model'
+require_relative 'actions/new_project'
+require_relative 'actions/migrate'
 
 module BlueEyes
   module Actions
@@ -21,11 +21,12 @@ module BlueEyes
       exec "sequel sqlite::/#{File.basename(Dir.pwd)}.db"
     end
 
-    def generate_paths_helper name, belongs_to
+    def generate_paths_helper(name, belongs_to)
       snake_name = snake_case(name)
       singular = snake_name.singularize snake_name
 
-      File.write BlueEyes::Paths.paths_plugins("#{snake_name}_helper.rb"), BlueEyes::Tmpl.paths_helper(name, singular, belongs_to)
+      File.write BlueEyes::Paths.paths_plugins("#{snake_name}_helper.rb"),
+                 BlueEyes::Tmpl.paths_helper(name, singular, belongs_to)
     end
   end
 end

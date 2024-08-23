@@ -1,14 +1,14 @@
-require "logger"
-require "warden"
-require "bcrypt"
-require "uri"
+require 'logger'
+require 'warden'
+require 'bcrypt'
+require 'uri'
 
 class SessionsController < ApplicationController
-  get "/login" do
+  get '/login' do
     haml :login
   end
 
-  post "/login" do
+  post '/login' do
     user = User.first(username: params[:username])
     if user && BCrypt::Password.new(user.password_hash) == params[:password]
       payload = {
@@ -18,24 +18,25 @@ class SessionsController < ApplicationController
       }
 
       token = JWT.encode payload, settings.jwt_secret[:secret], 'HS256'
-      d = DateTime.new 2025,1,1
+      d = DateTime.new 2025, 1, 1
       response.set_cookie('jwt', value: token, expires: d)
       redirect to '/'
     else
       redirect '/login'
     end
-  rescue => e
+  rescue StandardError => e
     @e = e
-    puts "Sessions_controller.rb: " + @e.message
+    puts 'Sessions_controller.rb: ' + @e.message
     puts settings.jwt_secret
   end
 
-  get "/logout" do
+  get '/logout' do
     response.delete_cookie('jwt')
-    redirect "/"
+    redirect '/'
   end
 
   get '/unauthenticated' do
-    redirect "/login"
+    redirect '/login'
   end
 end
+

@@ -37,14 +37,16 @@ module BlueEyes
           end
         end
       end
-      system "mv #{file_name} #{BlueEyes::Paths.bin("tailwindcss")}"
-      system "chmod 777 #{BlueEyes::Paths.bin("tailwindcss")}"
-      system "#{BlueEyes::Paths.bin("tailwindcss")} init"
+      system "mv #{file_name} #{BlueEyes::Paths.bin('tailwindcss')}"
+      system "chmod 777 #{BlueEyes::Paths.bin('tailwindcss')}"
+      system "#{BlueEyes::Paths.bin('tailwindcss')} init"
 
-      config = File.read "./tailwind.config.js"
-      config = config.sub("plugins: [],", "plugins: [require('@tailwindcss/forms'),require('@tailwindcss/typography'),],")
-      config = config.sub("content: [],", "content: ['./app/views/**/*.haml'],")
-      File.write "./tailwind.config.js", config
+      config = File.read './tailwind.config.js'
+      config = config.sub('plugins: [],',
+                          "plugins: [require('@tailwindcss/forms'),require('@tailwindcss/typography'),],")
+      config = config.sub('content: [],', "content: ['./app/views/**/*.haml'],")
+      File.write './tailwind.config.js', config
     end
   end
 end
+
