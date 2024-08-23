@@ -1,6 +1,9 @@
 source 'https://rubygems.org'
 ruby "#{RUBY_VERSION}"
 
-gem "webmock", "~> 3.23"
+group :development, :test do
+  gem "webmock", "~> 3.23"
 
-gem "rspec", "~> 3.13"
+  gem "rspec", "~> 3.13"
+  gem "activesupport", "~> 7.2"
+end
