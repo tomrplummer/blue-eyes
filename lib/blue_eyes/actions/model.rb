@@ -1,7 +1,7 @@
 module BlueEyes
   module Actions
     module Model
-
+      include Tmpl
       def generate_model(name, options = {})
         snake_name = snake_case(name)
         table_name = singular(snake_name)
@@ -36,14 +36,13 @@ module BlueEyes
       end
 
       def update_paths_config(snake_name, alias_name)
-        paths_config_path = Paths.helpers("paths_config.toml")
+        paths_config_path = Paths.helpers('paths_config.toml')
         paths_config = File.read(paths_config_path)
         new_resource = path_config_toml(snake_name, alias_name)
 
         updated_config = paths_config ? paths_config + new_resource : new_resource
         File.write(paths_config_path, updated_config)
       end
-
     end
   end
 end

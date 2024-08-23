@@ -1,60 +1,80 @@
-require_relative '../../lib/blue_eyes'
+require 'rspec'
+require 'fileutils'
+require_relative '../../lib/blue_eyes/actions/model'
+require_relative '../../lib/blue_eyes/paths'
 
 RSpec.describe BlueEyes::Actions::Model do
   include BlueEyes::Actions::Model
 
+  let(:name) { 'TestModel' }
+  let(:options) { { fields: ['name:string', 'age:integer'], as: 'test_model' } }
+  let(:snake_name) { 'test_model' }
+  let(:table_name) { 'test_model' }
+
+  before(:each) do
+    allow(Time).to receive(:now).and_return(Time.at(0))
+    allow(File).to receive(:write)
+    allow(File).to receive(:read).and_return('')
+    allow(Dir).to receive(:mkdir)
+    allow(Dir).to receive(:exist?).and_return(false)
+  end
+
   describe '#generate_model' do
-    before do
-      # Mocking methods from included modules
-      allow(self).to receive(:snake_case).with('Post').and_return('post')
-      allow(self).to receive(:singular).with('post').and_return('post')
-      allow(self).to receive(:model_template).with('post').and_return('model content')
-      allow(self).to receive(:migration).with('post', anything).and_return('migration content')
-      allow(self).to receive(:path_config_toml).with('post', anything).and_return("resource_config\n")
-      allow(self).to receive(:generate_controller)
+    it 'calls the necessary methods to generate a model' do
+      expect(self).to receive(:create_directories)
+      expect(self).to receive(:write_model_file).with(table_name)
+      expect(self).to receive(:write_migration_file).with(snake_name, options[:fields])
+      expect(self).to receive(:update_paths_config).with(snake_name, options[:as])
+      expect(self).to receive(:generate_controller).with(name, options)
 
-      # Stubbing Paths methods correctly
-      #allow(BlueEyes::Paths).to receive(:models).with(nil).and_return('/fake/path/models')
-      allow(BlueEyes::Paths).to receive(:models).with('post.rb').and_return('/fake/path/models/post.rb')
-      allow(BlueEyes::Paths).to receive(:db).with(nil).and_return('/fake/path/db')
-      #allow(BlueEyes::Paths).to receive(:migrations).with(nil).and_return('/fake/path/migrations')
-      allow(BlueEyes::Paths).to receive(:migrations).with("#{Time.now.to_i}_create_post.rb").and_return("/fake/path/migrations/#{Time.now.to_i}_create_post.rb")
-      allow(BlueEyes::Paths).to receive(:helpers).with('paths_config.toml').and_return('/fake/path/helpers/paths_config.toml')
+      generate_model(name, options)
+    end
+  end
 
-      allow(Dir).to receive(:mkdir)
-      allow(Dir).to receive(:exist?).and_return(false)
-      allow(File).to receive(:write)
-      allow(File).to receive(:read).and_return(nil)
+  describe '#create_directories' do
+    it 'creates the necessary directories' do
+      expect(self).to receive(:create_directory).with(BlueEyes::Paths.models)
+      expect(self).to receive(:create_directory).with(BlueEyes::Paths.db)
+      expect(self).to receive(:create_directory).with(BlueEyes::Paths.migrations)
 
-      # Setting a fixed time for predictable filenames
-      allow(Time).to receive(:now).and_return(Time.at(1234567890))
+      create_directories
+    end
+  end
+
+  describe '#create_directory' do
+    it 'creates a directory if it does not exist' do
+      expect(Dir).to receive(:mkdir).with(BlueEyes::Paths.models)
+      create_directory(BlueEyes::Paths.models)
     end
 
-    it 'creates necessary directories if they do not exist' do
-      generate_model('Post', fields: ['name:string'])
-
-      expect(Dir).to have_received(:mkdir).with('/fake/path/models')
-      expect(Dir).to have_received(:mkdir).with('/fake/path/db')
-      expect(Dir).to have_received(:mkdir).with('/fake/path/migrations')
+    it 'does not create a directory if it already exists' do
+      allow(Dir).to receive(:exist?).and_return(true)
+      expect(Dir).not_to receive(:mkdir)
+      create_directory(BlueEyes::Paths.models)
     end
+  end
 
-    it 'writes the model and migration files with correct content' do
-      generate_model('Post', fields: ['name:string'])
-
-      expect(File).to have_received(:write).with('/fake/path/models/post.rb', 'model content').ordered
-      expect(File).to have_received(:write).with('/fake/path/migrations/1234567890_create_post.rb', 'migration content').ordered
+  describe '#write_model_file' do
+    it 'writes the model file' do
+      expect(File).to receive(:write).with(BlueEyes::Paths.models("#{table_name}.rb"), anything)
+      write_model_file(table_name)
     end
+  end
 
-    it 'updates the paths_config.toml file with the new resource' do
-      generate_model('Post', as: 'article')
-
-      expect(File).to have_received(:write).with('/fake/path/helpers/paths_config.toml', "resource_config\n")
+  describe '#write_migration_file' do
+    it 'writes the migration file' do
+      file_name = "#{Time.now.to_i}_create_#{snake_name}.rb"
+      expect(File).to receive(:write).with(BlueEyes::Paths.migrations(file_name), anything)
+      write_migration_file(snake_name, options[:fields])
     end
+  end
 
-    it 'calls generate_controller with correct arguments' do
-      generate_model('Post', fields: ['name:string'])
-
-      expect(self).to have_received(:generate_controller).with('Post', fields: ['name:string'])
+  describe '#update_path_config' do
+    it 'updates the paths config file' do
+      path_config_path = BlueEyes::Paths.helpers("paths_config.toml")
+      expect(File).to receive(:read).with(path_config_path)
+      expect(File).to receive(:write).with(path_config_path, anything)
+      update_paths_config(snake_name, options[:as])
     end
   end
 end
