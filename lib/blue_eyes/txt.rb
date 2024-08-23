@@ -4,7 +4,7 @@ module BlueEyes
   module TXT
     def snake_case(str)
       new_str = str[0].downcase + str[1..]
-      new_str.gsub(/([A-Z])/, '_\1').downcase
+      new_str.gsub(/([A-Z]([a-z]))/, '_\1').downcase
     end
 
     def pascalize(str)
