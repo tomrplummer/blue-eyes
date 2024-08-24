@@ -4,7 +4,21 @@ module BlueEyes
       include Tmpl
       include BlueEyes::Actions::Controllers
       include BlueEyes::Actions
+
       def generate_scaffold(name, options = {})
+        snake_name = snake_case(name)
+        table_name = singular(snake_name)
+
+        create_directories
+        write_model_file(table_name)
+        write_views_file(snake_name)
+        write_migration_file(snake_name, options[:fields])
+        update_paths_config(snake_name, options[:as])
+
+        generate_controller(name, options)
+      end
+
+      def generate_api(name, options = {})
         snake_name = snake_case(name)
         table_name = singular(snake_name)
 
@@ -35,6 +49,11 @@ module BlueEyes
       def write_migration_file(snake_name, fields)
         file_name = "#{Time.now.to_i}_create_#{snake_name}.rb"
         File.write(Paths.migrations(file_name), migration_t(snake_name, fields))
+      end
+
+      def write_views_file(snake_name)
+        name = "#{snake_name}.haml"
+        File.write(Paths.views(name), view())
       end
 
       def update_paths_config(snake_name, alias_name)

@@ -44,6 +44,16 @@ class GenerateSubcommand < Thor
   method_option :belongs_to, type: :string
   method_option :as, type: :string
   method_option :only, type: :array
+  desc 'api <Name> [options]',
+      'Generate models, controllers and migrations for Sinatra/Sequel'
+  def api(name)
+    generate_api name, options
+  end
+
+  method_option :fields, type: :array, default: []
+  method_option :belongs_to, type: :string
+  method_option :as, type: :string
+  method_option :only, type: :array
   desc 'controller <Name> [options]',
        'Generate controller (assumes a matching model will be made)'
   def controller(name)
