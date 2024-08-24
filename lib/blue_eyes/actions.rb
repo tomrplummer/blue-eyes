@@ -4,6 +4,7 @@ require 'securerandom'
 require_relative 'tmpl'
 require_relative 'txt'
 require_relative 'actions/controller'
+require_relative 'actions/scaffold'
 require_relative 'actions/model'
 require_relative 'actions/new_project'
 require_relative 'actions/migrate'
@@ -14,7 +15,6 @@ module BlueEyes
     include Tmpl
     include NewProject
     include Controllers
-    include Model
     include Migrate
 
     def db

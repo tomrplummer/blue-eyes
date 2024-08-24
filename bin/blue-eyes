@@ -2,6 +2,74 @@
 
 require 'thor'
 require_relative '../lib/blue_eyes'
+require_relative '../lib/blue_eyes/actions/migration'
+
+class MigrationSubcommand < Thor
+  include BlueEyes::Actions::Migration
+
+  method_option :add, type: :array, default: []
+  method_option :drop, type: :array, default: []
+  desc 'alter <table_name> [options]', 'Generate migration script to alter table'
+  def alter(table_name)
+    if options[:add].size.positive?
+      generate_add_columns(table_name, options[:add])
+    elsif options[:drop]
+      generate_drop_columns(table_name, options[:drop])
+    end
+  end
+
+  desc 'drop <table_name>', 'Generate migration script to drop table'
+  def drop(table_name)
+    table_sym = table_name.to_sym
+    generate_drop_table_migration(table_sym)
+  end
+end
+
+class GenerateSubcommand < Thor
+  include BlueEyes::Actions::Scaffold
+  include BlueEyes::Actions::Model
+  include BlueEyes::Actions::Migration
+
+  method_option :fields, type: :array, default: []
+  method_option :belongs_to, type: :string
+  method_option :as, type: :string
+  method_option :only, type: :array
+  desc 'scaffold <Name> [options]',
+       'Generate models, views, controllers and migrations for Sinatra/Sequel/haml'
+  def scaffold(name)
+    generate_scaffold name, options
+  end
+
+  method_option :fields, type: :array, default: []
+  method_option :belongs_to, type: :string
+  method_option :as, type: :string
+  method_option :only, type: :array
+  desc 'controller <Name> [options]',
+       'Generate controller (assumes a matching model will be made)'
+  def controller(name)
+    generate_controller name, options
+  end
+
+  method_option :fields, type: :array, default: []
+  method_option :belongs_to, type: :string
+  method_option :as, type: :string
+  method_option :only, type: :array
+  desc 'model <Name> [options]',
+       'Generate model and migrations'
+  def model(name)
+    generate_model name, options
+  end
+
+  # method_option :fields, type: :array, default: []
+  # method_option :belongs_to, type: :string
+  # desc 'migration <Name> [options]',
+  #      'Generate migration scripts'
+  # def migration(name)
+  #   generate_migration(name, options)
+  # end
+  desc 'migration [alter|drop] [options]', 'Generate migrations scripts'
+  subcommand "migration", MigrationSubcommand
+end
 
 class Cli < Thor
   include BlueEyes
@@ -12,30 +80,18 @@ class Cli < Thor
     new_project name, options[:db]
   end
 
-  method_option :fields, type: :array, default: []
-  method_option :belongs_to, type: :string
-  method_option :as, type: :string
-  method_option :only, type: :array
-  desc 'generate <Name> [options]',
-       'Generate models, views, controllers and migrations for Sinatra/Sequel/haml'
-  def generate(name)
-    generate_model name, options
-  end
-
-  method_option :fields, type: :array, default: []
-  method_option :belongs_to, type: :string
-  method_option :as, type: :string
-  method_option :only, type: :array
-  desc 'g <Name> [options]',
-       'Generate models, views, controllers and migrations for Sinatra/Sequel/haml'
-  def g(name)
-    generate_model name, options
-  end
-
   desc 'migrate', 'Runs db migrate'
   def migrate
     Migrate.migrate
   end
+
+  desc 'generate', 'Generate models, views, controllers and migrations for Sinatra/Sequel/haml'
+  subcommand 'generate', GenerateSubcommand
+
+  desc 'g', 'Generate models, views, controllers and migrations for Sinatra/Sequel/haml'
+  subcommand 'g', GenerateSubcommand
 end
+
+
 
 Cli.start(ARGV)

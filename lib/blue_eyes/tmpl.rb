@@ -129,7 +129,7 @@ module BlueEyes
       TEMPLATE
     end
 
-    def controller(class_name, options)
+    def controller_t(class_name, options)
       instance_var_singular = singular snake_case(class_name)
       instance_var_plural = plural snake_case(class_name)
       model_name = singular class_name
@@ -273,7 +273,7 @@ module BlueEyes
       TEMPLATE
     end
 
-    def migration(table_name, columns)
+    def migration_t(table_name, columns)
       <<~TEMPLATE
         Sequel.migration do
           change do
@@ -281,6 +281,36 @@ module BlueEyes
               primary_key :id
               #{columns.map { |column| "#{column.split(':')[0]} :#{column.split(':')[1]}" }.join("\n#{' ' * 6}")}
             end
+          end
+        end
+      TEMPLATE
+    end
+
+    def migration_drop_table(table_sym)
+      <<~TEMPLATE
+        Sequel.migration do
+          change do
+            drop_table(#{table_sym})
+          end
+        end
+      TEMPLATE
+    end
+
+    def migration_add_columns(table_name, fields)
+      <<~TEMPLATE
+        Sequel.migration do
+          change do
+            #{fields.map {|field| "add_column :#{table_name}, :#{field.split(':')[1]}, #{field.split(':')[0]}"}.join("\n#{' ' * 4}")}
+          end
+        end
+      TEMPLATE
+    end
+
+    def migration_drop_columns(table_name, fields)
+      <<~TEMPLATE
+        Sequel.migration do
+          change do
+            #{fields.map {|field| "drop_column :#{table_name}, :#{field}"}.join("\n#{' ' * 4}")}
           end
         end
       TEMPLATE

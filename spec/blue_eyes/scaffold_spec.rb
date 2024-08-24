@@ -1,10 +1,10 @@
 require 'rspec'
 require 'fileutils'
-require_relative '../../lib/blue_eyes/actions/model'
+require_relative '../../lib/blue_eyes/actions/scaffold'
 require_relative '../../lib/blue_eyes/paths'
 
-RSpec.describe BlueEyes::Actions::Model do
-  include BlueEyes::Actions::Model
+RSpec.describe BlueEyes::Actions::Scaffold do
+  include BlueEyes::Actions::Scaffold
 
   let(:name) { 'TestModel' }
   let(:options) { { fields: ['name:string', 'age:integer'], as: 'test_model' } }
@@ -19,7 +19,7 @@ RSpec.describe BlueEyes::Actions::Model do
     allow(Dir).to receive(:exist?).and_return(false)
   end
 
-  describe '#generate_model' do
+  describe '#generate_scaffold' do
     it 'calls the necessary methods to generate a model' do
       expect(self).to receive(:create_directories)
       expect(self).to receive(:write_model_file).with(table_name)
@@ -27,7 +27,7 @@ RSpec.describe BlueEyes::Actions::Model do
       expect(self).to receive(:update_paths_config).with(snake_name, options[:as])
       expect(self).to receive(:generate_controller).with(name, options)
 
-      generate_model(name, options)
+      generate_scaffold(name, options)
     end
   end
 
@@ -69,11 +69,11 @@ RSpec.describe BlueEyes::Actions::Model do
     end
   end
 
-  describe '#update_path_config' do
+  describe '#update_paths_config' do
     it 'updates the paths config file' do
-      path_config_path = BlueEyes::Paths.helpers("paths_config.toml")
-      expect(File).to receive(:read).with(path_config_path)
-      expect(File).to receive(:write).with(path_config_path, anything)
+      paths_config_path = BlueEyes::Paths.helpers("paths_config.toml")
+      expect(File).to receive(:read).with(paths_config_path)
+      expect(File).to receive(:write).with(paths_config_path, anything)
       update_paths_config(snake_name, options[:as])
     end
   end

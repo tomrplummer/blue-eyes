@@ -1,9 +1,10 @@
 module BlueEyes
   module Actions
-    module Model
+    module Scaffold
       include Tmpl
       include BlueEyes::Actions::Controllers
-      def generate_model(name, options = {})
+      include BlueEyes::Actions
+      def generate_scaffold(name, options = {})
         snake_name = snake_case(name)
         table_name = singular(snake_name)
 
@@ -12,7 +13,7 @@ module BlueEyes
         write_migration_file(snake_name, options[:fields])
         update_paths_config(snake_name, options[:as])
 
-        #generate_controller(name, options)
+        generate_controller(name, options)
       end
 
       private

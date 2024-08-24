@@ -5,8 +5,7 @@ module BlueEyes
       def generate_controller(name, options)
         snake_name = snake_case(name)
         # File.write BlueEyes::Paths.controllers("#{snake_name}_controller.rb"), BlueEyes::Tmpl::controller(name)
-        File.write Paths.controllers("#{snake_name}_controller.rb"), controller(name, options)
-        File.write Paths.views("#{snake_name}_index.haml"), view
+        File.write Paths.controllers("#{snake_name}_controller.rb"), controller_t(name, options)
 
         conf = File.read 'config.ru'
         lines = conf.split "\n"
