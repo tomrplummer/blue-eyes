@@ -2,7 +2,7 @@
 
 This is a "toy" project/file generater for projects using Sinatra, Sequel, Haml and Tailwind.css.
 
-It doesn't necessarily use sane defaults and only works "fully" on macos.  Again, a toy project.
+It doesn't necessarily use sane defaults, isn't flexible and only works "fully" on macos.  Again, a toy project.
 
 Sequel and foreman (if using bin/dev) are expected to be installed globally.
 
@@ -18,7 +18,7 @@ bin/dev
 ```
 
 #### Add a new resource
-Generates model, controller, view (index only...and blank) and migrations scripts.
+Generates model, controller, view (index only...and blank) and migration scripts.
 ```
 blue-eyes g scaffold Posts --fields String:title String:content --as blogs
 ```
