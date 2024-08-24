@@ -51,4 +51,4 @@ blue-eyes g migration alter posts --drop middle_name
 As seen with the new project snippet, migrate will run all migration scripts.
 ```
 blue-eyes migrate
-'''
+```
