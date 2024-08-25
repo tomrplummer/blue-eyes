@@ -1,17 +1,17 @@
 %html{:data => {:theme => 'night'}}
   %head
     %link{:href => "/stylesheets/application.css", :rel=>"stylesheet"}
-    %link{href:"https://cdn.jsdelivr.net/npm/daisyui@3.7.3/dist/full.css", rel:"stylesheet", type:"text/css"}
+    -# %link{href:"https://cdn.jsdelivr.net/npm/daisyui@3.7.3/dist/full.css", rel:"stylesheet", type:"text/css"}
     -# %link{:href => "/stylesheets/milligram.css", :rel=>"stylesheet"}
     %link{:href => "/stylesheets/custom.css", :rel=>"stylesheet"}
 
 
   %body
-    %div.navbar.bg-base-100.shadow-md.mb-8
+    %div.flex.space-between.bg-base-100.shadow-md.mb-8
       %div.flex-1
         %a.button.btn.btn-ghost.text-xl{:href => "/"}= "Site"
       %div.flex-none
-        %div.flex.flex-row
+        %div.flex.flex-row.items-center
           - if current_user
             %a.link{:href => "/user/profile/#{current_user[:id]}"}= current_user[:full_name] || current_user[:username]
           %a.link{href: "/login"}= "Login" if current_user.nil?

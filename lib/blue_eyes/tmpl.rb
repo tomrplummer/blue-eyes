@@ -60,8 +60,9 @@ module BlueEyes
     end
 
     def redirect_name(class_name, options)
-        return snake_case class_name if options[:as].nil?
-        plural(snake_case(options[:as]))
+      return snake_case class_name if options[:as].nil?
+
+      plural(snake_case(options[:as]))
     end
 
     def index_action(class_name, options)
@@ -233,7 +234,7 @@ module BlueEyes
       <<~TEMPLATE
         [[resources]]
         name = "#{name}"
-        #{as_name ? "as = \"#{as_name}\"" : ""}
+        #{as_name ? "as = \"#{as_name}\"" : ''}
 
       TEMPLATE
     end
@@ -280,6 +281,9 @@ module BlueEyes
             create_table(:#{plural(table_name)}) do
               primary_key :id
               #{columns.map { |column| "#{column.split(':')[0]} :#{column.split(':')[1]}" }.join("\n#{' ' * 6}")}
+
+              DateTime :created_at
+              DateTime :updated_at
             end
           end
         end
@@ -300,7 +304,7 @@ module BlueEyes
       <<~TEMPLATE
         Sequel.migration do
           change do
-            #{fields.map {|field| "add_column :#{table_name}, :#{field.split(':')[1]}, #{field.split(':')[0]}"}.join("\n#{' ' * 4}")}
+            #{fields.map { |field| "add_column :#{table_name}, :#{field.split(':')[1]}, #{field.split(':')[0]}" }.join("\n#{' ' * 4}")}
           end
         end
       TEMPLATE
@@ -310,7 +314,7 @@ module BlueEyes
       <<~TEMPLATE
         Sequel.migration do
           change do
-            #{fields.map {|field| "drop_column :#{table_name}, :#{field}"}.join("\n#{' ' * 4}")}
+            #{fields.map { |field| "drop_column :#{table_name}, :#{field}" }.join("\n#{' ' * 4}")}
           end
         end
       TEMPLATE

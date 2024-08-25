@@ -52,8 +52,8 @@ module BlueEyes
       end
 
       def write_views_file(snake_name)
-        name = "#{snake_name}.haml"
-        File.write(Paths.views(name), view())
+        name = "#{snake_name}_index.haml"
+        File.write(Paths.views(name), view)
       end
 
       def update_paths_config(snake_name, alias_name)
