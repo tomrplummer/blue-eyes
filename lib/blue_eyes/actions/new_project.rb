@@ -20,8 +20,8 @@ module BlueEyes
 
       def resolve_gem_path
         # Resolve the path to the gem
-        # File.expand_path Gem::Specification.find_by_name('blue-eyes').gem_dir
-        File.expand_path './blue-eyes'
+        File.expand_path Gem::Specification.find_by_name('blue-eyes').gem_dir
+        #File.expand_path './blue-eyes'
       end
 
       def setup_project_directory(snake_name, gem_path)
@@ -67,6 +67,7 @@ module BlueEyes
         puts 'Run site'
         puts '---------------------------------------------------'
         puts "cd #{snake_case(name)}"
+        puts "blue-eyes migrate"
         puts 'bin/dev'
       end
     end
