@@ -4,7 +4,7 @@ This is a "toy" project/file generater for projects using Sinatra, Sequel, Haml 
 
 It doesn't necessarily use sane defaults, isn't flexible and only works "fully" on macos.  Again, a toy project.
 
-Sequel and foreman (if using bin/dev) are expected to be installed globally.
+Sequel, sqlite3 and foreman (if using bin/dev) are expected to be installed globally.  Maybe more.
 
 ## Examples
 
