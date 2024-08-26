@@ -5,6 +5,7 @@ Sequel.migration do
       String :full_name
       String :username
       String :password_hash
-    end 
+      String :role
+    end
   end
 end
