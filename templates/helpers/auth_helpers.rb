@@ -32,7 +32,7 @@ module AuthHelpers
   def authenticate request = nil
     token = request.cookies['jwt']
     begin
-      decoded_token = JWT.decode token, settings.jwt_secret, true, { algorithm: 'HS256' }
+      decoded_token = JWT.decode token, settings.jwt_secret[:secret], true, { algorithm: 'HS256' }
       @user = User[decoded_token.first['user_id']]
       true
     rescue JWT::ExpiredSignature, JWT::VerificationError, JWT::DecodeError => e
