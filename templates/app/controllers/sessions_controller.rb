@@ -1,5 +1,4 @@
 require 'logger'
-require 'warden'
 require 'bcrypt'
 require 'uri'
 
@@ -39,4 +38,3 @@ class SessionsController < ApplicationController
     redirect '/login'
   end
 end
-

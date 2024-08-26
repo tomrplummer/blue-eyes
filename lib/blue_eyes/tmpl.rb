@@ -243,7 +243,6 @@ module BlueEyes
       <<~TEMPLATE
         require "sinatra"
         require "sequel"
-        require "warden"
         require "securerandom"
         require "jwt"
         require "dotenv"

@@ -21,7 +21,6 @@ RSpec.describe BlueEyes::Bndl do
         puma
         foreman
         activesupport
-        warden
         bcrypt
         jwt
         dotenv
@@ -46,7 +45,6 @@ RSpec.describe BlueEyes::Bndl do
         puma
         foreman
         activesupport
-        warden
         bcrypt
         jwt
         dotenv
