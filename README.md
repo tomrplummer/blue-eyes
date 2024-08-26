@@ -8,7 +8,7 @@ It doesn't necessarily use sane defaults, isn't flexible and only works "fully" 
 
 ## Examples
 
-#### Create a new and run a new project
+#### Create and run a new project
 ```
 blue-eyes new my_project
 ...
@@ -18,7 +18,7 @@ bin/dev
 ```
 
 #### Add a new resource
-Generates model, controller, view (index only...and blank) and migration scripts.
+Generates model, controller, view (index only...and mostly blank) and migration scripts.
 ```
 blue-eyes g scaffold Posts --fields String:title String:content --as blogs
 ```
@@ -37,7 +37,6 @@ post_post_path() # this should probably be create_post_path...to do
 edit_post_path(post)
 update_post_path(post)
 destory_post_path(post)
-
 ```
 
 Other than scaffold, you can do model, controller or api (model and controller).  Anything with model will include migration scripts. Api should do way more than it does at the moment.  Right now it isn't helpful for anything other than generating some files with controller actions that don't make since. TODO.
