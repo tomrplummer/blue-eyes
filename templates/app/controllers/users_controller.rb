@@ -2,10 +2,10 @@ require 'haml'
 require 'bcrypt'
 
 class UsersController < ApplicationController
-  get '/users' do
-    @users = User.all
-    haml :users_index
-  end
+  # get '/users' do
+  #   @users = User.all
+  #   haml :users_index
+  # end
 
   get '/signup' do
     @user = User.new
@@ -13,6 +13,8 @@ class UsersController < ApplicationController
   end
 
   get '/user/profile/:id' do |id|
+    return access_denied unless user_has_access
+
     @user = User.find(id:)
     haml :users_edit
   end
@@ -27,6 +29,8 @@ class UsersController < ApplicationController
   end
 
   put '/user/profile/:id' do |id|
+    return access_denied unless user_has_access
+
     user = User.find(id:)
     p = {
       full_name: params[:full_name]
@@ -39,8 +43,21 @@ class UsersController < ApplicationController
   end
 
   delete '/user/:id' do |id|
+    return access_denied unless user_has_access
+
     user = User.find(id:)
     user.destroy
-    redirect '/users'
+    redirect '/'
   end
+
+  private
+
+  def access_denied
+    haml :access_denied
+  end
+
+  def user_has_access
+    !current_user.nil? && current_user[:id] == params[:id].to_i
+  end
+
 end
