@@ -243,6 +243,7 @@ module BlueEyes
       <<~TEMPLATE
         require "sinatra"
         require "sequel"
+        require "sqlite3"
         require "securerandom"
         require "jwt"
         require "dotenv"

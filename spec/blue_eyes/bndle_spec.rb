@@ -24,6 +24,7 @@ RSpec.describe BlueEyes::Bndl do
         jwt
         dotenv
         toml-rb
+        foreman
         sqlite3
       ]
 
@@ -47,6 +48,7 @@ RSpec.describe BlueEyes::Bndl do
         jwt
         dotenv
         toml-rb
+        foreman
         pg
       ]
 

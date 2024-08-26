@@ -81,7 +81,7 @@ RSpec.describe BlueEyes::Actions::NewProject do
 
   describe '#run_migrations' do
     it 'runs database migrations' do
-      expect(self).to receive(:system).with("sequel -m ./db/migrations/ #{connection_string}")
+      expect(self).to receive(:system).with("bundle exec sequel -m ./db/migrations/ #{connection_string}")
 
       run_migrations(snake_name, connection_string)
     end

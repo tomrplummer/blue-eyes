@@ -61,7 +61,7 @@ module BlueEyes
 
       def run_migrations(name, connection_string)
         # template, connection_string = env_file(SecureRandom.hex(64), snake_case(name), db).last
-        system "sequel -m ./db/migrations/ #{connection_string}"
+        system "bundle exec sequel -m ./db/migrations/ #{connection_string}"
 
         puts 'Run site'
         puts '---------------------------------------------------'

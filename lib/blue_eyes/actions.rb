@@ -18,7 +18,7 @@ module BlueEyes
     include Migrate
 
     def db
-      exec "sequel sqlite::/#{File.basename(Dir.pwd)}.db"
+      exec "bundle exec sequel sqlite::/#{File.basename(Dir.pwd)}.db"
     end
 
     def generate_paths_helper(name, belongs_to)

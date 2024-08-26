@@ -7,7 +7,7 @@ RSpec.describe BlueEyes::Actions do
   describe '#db' do
     it 'executes the sequel command with the correct database name' do
       db_name = "#{File.basename(Dir.pwd)}.db"
-      expect(self).to receive(:exec).with("sequel sqlite::/#{db_name}")
+      expect(self).to receive(:exec).with("bundle exec sequel sqlite::/#{db_name}")
       db
     end
   end

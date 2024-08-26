@@ -1,2 +1,2 @@
 #!/usr/bin/env sh
-foreman start -f procfile.dev "$@"
+bundle exec foreman start -f procfile.dev "$@"

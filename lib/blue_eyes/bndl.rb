@@ -17,6 +17,7 @@ module BlueEyes
         jwt
         dotenv
         toml-rb
+        foreman
       ]
       # foreman and warden for now
       # will comeback and readd foreman once
