@@ -21,7 +21,6 @@ module BlueEyes
       def resolve_gem_path
         # Resolve the path to the gem
         File.expand_path Gem::Specification.find_by_name('blue-eyes').gem_dir
-        #File.expand_path './blue-eyes'
       end
 
       def setup_project_directory(snake_name, gem_path)
@@ -61,13 +60,13 @@ module BlueEyes
       end
 
       def run_migrations(name, connection_string)
-        #template, connection_string = env_file(SecureRandom.hex(64), snake_case(name), db).last
+        # template, connection_string = env_file(SecureRandom.hex(64), snake_case(name), db).last
         system "sequel -m ./db/migrations/ #{connection_string}"
 
         puts 'Run site'
         puts '---------------------------------------------------'
         puts "cd #{snake_case(name)}"
-        puts "blue-eyes migrate"
+        puts 'blue-eyes migrate'
         puts 'bin/dev'
       end
     end
