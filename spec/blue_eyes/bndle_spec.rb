@@ -15,11 +15,10 @@ RSpec.describe BlueEyes::Bndl do
       expected_gems = %w[
         sinatra
         sinatra-contrib
+        sequel
         rackup
         haml
-        sequel
         puma
-        foreman
         activesupport
         bcrypt
         jwt
@@ -39,11 +38,10 @@ RSpec.describe BlueEyes::Bndl do
       expected_gems = %w[
         sinatra
         sinatra-contrib
+        sequel
         rackup
         haml
-        sequel
         puma
-        foreman
         activesupport
         bcrypt
         jwt
