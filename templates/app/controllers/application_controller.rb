@@ -8,6 +8,28 @@ class ApplicationController < Sinatra::Base
   extend ActiveSupport::Inflector
   logger = Logger.new $stdout
 
+  configure do
+    set :jwt_secret, secret: ENV["JWT_SECRET"]
+  end
+
+  configure :development do
+    register Sinatra::Reloader
+  end
+
+  set :public_folder, File.join(root, "..", "public")
+
+  set :views, -> {
+    File.expand_path(
+      "../../app/views/",
+      File.dirname(__FILE__)
+    )
+  }
+
+  before do
+    logger.info session[:current_user]
+    @errors = []
+  end
+
   # Sets or gets the base name for a class
   def self.base_name(name = nil)
     @base_name = name if name
@@ -42,39 +64,31 @@ class ApplicationController < Sinatra::Base
   class << self
     # def get(route_name, &block)
     def get(*args, &block)
-      begin
-        args[0] = build_route(args[0])
-        super(*args, &block)
-      rescue
-        puts args, block
-      end
+      args[0] = build_route(args[0])
+      super(*args, &block)
+    rescue
+      puts args, block
     end
 
     def post(*args, &block)
-      begin
-        args[0] = build_route(args[0])
-        super(*args, &block)
-      rescue
-        puts args, block
-      end
+      args[0] = build_route(args[0])
+      super(*args, &block)
+    rescue
+      puts args, block
     end
 
     def put(*args, &block)
-      begin
-        args[0] = build_route(args[0])
-        super(*args, &block)
-      rescue
-        puts args, block
-      end
+      args[0] = build_route(args[0])
+      super(*args, &block)
+    rescue
+      puts args, block
     end
 
     def delete(*args, &block)
-      begin
-        args[0] = build_route(args[0])
-        super(*args, &block)
-      rescue
-        puts args, block
-      end
+      args[0] = build_route(args[0])
+      super(*args, &block)
+    rescue
+      puts args, block
     end
 
     def build_route(route_name)
@@ -84,23 +98,23 @@ class ApplicationController < Sinatra::Base
         if @as
           @base_name = @as
         end
-        case route_name
+        full_route = case route_name
         when :index
-          full_route = route_base + "/#{@base_name.to_s}"
+          route_base + "/#{@base_name}"
         when :new
-          full_route = route_base + "/#{@base_name.to_s}/new"
+          route_base + "/#{@base_name}/new"
         when :show
-          full_route = "/#{@base_name.to_s}/:id"
+          "/#{@base_name}/:id"
         when :edit
-          full_route = "/#{@base_name.to_s}/:id/edit"
+          "/#{@base_name}/:id/edit"
         when :create
-          full_route = route_base + "/#{@base_name.to_s}"
+          route_base + "/#{@base_name}"
         when :update
-          full_route = "/#{@base_name.to_s}/:id"
+          "/#{@base_name}/:id"
         when :destroy
-          full_route = "/#{@base_name.to_s}/:id"
+          "/#{@base_name}/:id"
         else
-          full_route = ""
+          ""
         end
         puts "#{route_name} #{full_route}"
       end
@@ -109,36 +123,14 @@ class ApplicationController < Sinatra::Base
 
     def route_base
       if @belongs_to
-        "/#{@belongs_to.to_s}/:#{@belongs_to.to_s.singularize}_id"
+        "/#{@belongs_to}/:#{@belongs_to.to_s.singularize}_id"
       else
         ""
       end
     end
   end
 
-  before do
-    logger.info session[:current_user]
-  end
-
-  set :public_folder, File.join(root, '..', 'public')
-
-
-  set :views, -> {
-    File.expand_path(
-      "../../app/views/",
-      File.dirname(__FILE__)
-    )
-  }
-
-  post '/unauthenticated' do
+  post "/unauthenticated" do
     redirect "/login"
-  end
-
-  configure do
-    set :jwt_secret, secret: ENV['JWT_SECRET']
-  end
-
-  configure :development do
-    register Sinatra::Reloader
   end
 end
