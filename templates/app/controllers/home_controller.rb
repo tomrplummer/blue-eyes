@@ -2,6 +2,9 @@ require 'haml'
 
 class HomeController < ApplicationController
   get '/' do
-    haml :home_index
+    respond_to do
+      json {{message: "Coming Soon"}}
+      html {haml :home_index}
+    end
   end
 end

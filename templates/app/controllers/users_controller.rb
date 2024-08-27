@@ -4,7 +4,10 @@ require "bcrypt"
 class UsersController < ApplicationController
   # get '/users' do
   #   @users = User.all
-  #   haml :users_index
+  #   respond_to do
+  #     json(except: [:password_hash]) { @users }
+  #     html {haml: :users_index}
+  #   end
   # end
 
   get "/signup" do
@@ -16,7 +19,10 @@ class UsersController < ApplicationController
     return access_denied unless user_has_access
 
     @user = User.find(id:)
-    haml :users_edit
+    respond_to do
+      json(except: [:password_hash]) { @user }
+      html { haml :users_edit }
+    end
   end
 
   post "/user" do
