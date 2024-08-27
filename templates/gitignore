@@ -44,6 +44,9 @@ config/database.yml
 # Ignore node_modules in case you are using npm/yarn with Sinatra
 node_modules/
 
+vendor/
+vendor/*
+
 # Ignore compiled HAML files (if you ever compile them)
 *.html.haml
 

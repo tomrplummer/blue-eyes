@@ -50,6 +50,7 @@ RSpec.describe BlueEyes::Actions::NewProject do
     it 'creates the project directory and copies template files' do
       expect(Dir).to receive(:mkdir).with(destination)
       expect(FileUtils).to receive(:cp_r).with("#{source_dir}/.", destination)
+      expect(FileUtils).to receive(:mv).with("#{destination}/gitignore", "#{destination}/.gitignore")
       expect(Dir).to receive(:chdir).with(destination)
 
       setup_project_directory(snake_name, gem_path)
