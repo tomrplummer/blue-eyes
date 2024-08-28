@@ -287,8 +287,8 @@ module BlueEyes
               primary_key :id
               #{columns.map { |column| "#{column.split(':')[0]} :#{column.split(':')[1]}" }.join("\n#{' ' * 6}")}
 
-              DateTime :created_at
-              DateTime :updated_at
+              DateTime :created_at, default: Sequel::CURRENT_TIMESTAMP
+              DateTime :updated_at, default: Sequel::CURRENT_TIMESTAMP
             end
           end
         end
