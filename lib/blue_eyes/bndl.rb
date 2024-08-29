@@ -8,6 +8,7 @@ module BlueEyes
       gems = %w[
         sinatra
         sinatra-contrib
+        sinatra-flash
         sequel
         rackup
         haml

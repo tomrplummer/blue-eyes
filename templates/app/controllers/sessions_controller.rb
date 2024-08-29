@@ -9,28 +9,27 @@ class SessionsController < ApplicationController
   end
 
   post "/login" do
-    user = User.first(username: params[:username])
-    if user && BCrypt::Password.new(user.password_hash) == params[:password]
-      payload = {
-        id: user.id,
-        username: user.username,
-        full_name: user.full_name
-      }
+    login_service = LoginService.new(
+      params[:username],
+      params[:password],
+      settings.jwt_secret[:secret]
+    )
+    result = login_service.call
 
-      token = JWT.encode payload, settings.jwt_secret[:secret], "HS256"
-      d = Time.now + 14 * 86400
-      response.set_cookie("jwt", value: token, expires: d)
+    if result[:success]
+      response.set_cookie(
+        "jwt",
+        value: result[:token],
+        expires: Time.now + 14 * 86400
+      )
+
       redirect to "/"
     else
+      status result[:status]
       @user = User.new(username: params[:username])
-      @errors << "Invalid username or password"
+      flash[:error] = result[:message]
       haml :login
     end
-  rescue => e
-    logger.error "Login error: #{e.message}"
-    @user = User.new(username: params[:username])
-    @errors << "An error occurred during login. Please try again later."
-    haml :login
   end
 
   get "/logout" do
@@ -42,5 +41,3 @@ class SessionsController < ApplicationController
     redirect "/login"
   end
 end
-
-# 800 - 892 - 4357

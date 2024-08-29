@@ -262,7 +262,7 @@ module BlueEyes
 
         Sequel::Model.plugin :json_serializer
 
-        Dir.glob("./app/{controllers,models}/*.rb").each do |file|
+        Dir.glob("./app/{controllers,models,services}/*.rb").each do |file|
           require file
         end
 

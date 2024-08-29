@@ -15,6 +15,7 @@ RSpec.describe BlueEyes::Bndl do
       expected_gems = %w[
         sinatra
         sinatra-contrib
+        sinatra-flash
         sequel
         rackup
         haml
@@ -39,6 +40,7 @@ RSpec.describe BlueEyes::Bndl do
       expected_gems = %w[
         sinatra
         sinatra-contrib
+        sinatra-flash
         sequel
         rackup
         haml

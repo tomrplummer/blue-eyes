@@ -1,5 +1,6 @@
 require "haml"
 require "bcrypt"
+require "logger"
 
 class UsersController < ApplicationController
   # get '/users' do
@@ -16,9 +17,27 @@ class UsersController < ApplicationController
   end
 
   get "/user/profile/:id" do |id|
-    return access_denied unless user_has_access
+    #return access_denied unless user_has_access
+    user_service = UsersService.new(id: id, current_user: current_user)
 
-    @user = User.find(id:)
+    result = user_service.show_user
+
+    return error_response(result[:error]) do
+      recover Error.access_denied do
+        haml :access_denied
+      end
+      recover Error.not_found do
+        @user = result[:user]
+        flash[:error] = result[:message]
+        haml :users_edit
+      end
+      recover Error.server_error do
+        haml :error
+      end
+    end if result[:error]
+
+    @user = result[:user]
+
     respond_to do
       json(except: [:password_hash]) { @user }
       html { haml :users_edit }
@@ -26,51 +45,32 @@ class UsersController < ApplicationController
   end
 
   post "/user" do
+    user_service = UsersService.new(params: params)
+    result = user_service.create_user
+
+    flash[:notice] = "Account created"
+    redirect "/login" if result[:success]
+
     @user = User.new(username: params[:username])
-
-    password_hash = BCrypt::Password.create(params[:password])
-    # Check if the username is unique
-    if User.first(username: params[:username])
-      @errors << "Username is already taken"
-      return haml :users_new
-    end
-
-    # Check password complexity
-    password = params[:password]
-    if password.length < 8
-      @errors << "Password must be at least 8 characters long"
-      return haml :users_new
-    end
-
-    complexity_score = 0
-    complexity_score += 1 if /[A-Z]/.match?(password)
-    complexity_score += 1 if /[a-z]/.match?(password)
-    complexity_score += 1 if /[0-9]/.match?(password)
-    complexity_score += 1 if /[^A-Za-z0-9]/.match?(password)
-
-    if complexity_score < 3
-      @errors << "Password must contain at least 3 of the following: uppercase letter, lowercase letter, number, symbol"
-      return haml :users_new
-    end
-
-    result = User.create({
-      username: params[:username],
-      password_hash:
-    })
-    redirect "/login"
+    flash[:error] = result[:error]
+    haml :users_new
   end
 
   put "/user/profile/:id" do |id|
-    return access_denied unless user_has_access
+    user_service = UsersService.new(id: id, params: params, current_user: current_user)
+    result = user_service.update_user
 
-    user = User.find(id:)
-    p = {
-      full_name: params[:full_name]
-    }
-    if !params[:password].nil? && params[:password].length > 0
-      p.merge({password_hash: BCrypt::Password.create(params[:password])})
-    end
-    user.update User.permitted(p)
+    return error_response(result[:error]) do
+      recover Error.access_denied do haml :access_denied end
+      recover Error.server_error do haml :error end
+      recover(:rest) do
+        @user = User.new User.permitted(params)
+        flash[:error] = result[:message]
+        redirect "/user/profile/#{id}"
+      end
+    end if result[:error]
+
+    flash[:notice] = "User updated"
     redirect "/user/profile/#{id}"
   end
 
@@ -85,6 +85,7 @@ class UsersController < ApplicationController
   private
 
   def access_denied
+    status 401
     haml :access_denied
   end
 

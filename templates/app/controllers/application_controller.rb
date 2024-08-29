@@ -1,12 +1,18 @@
 require "sinatra/base"
 require "sinatra/reloader" if development?
+require "sinatra/flash"
 require "logger"
 require "active_support"
+require_relative "../services/error"
 
 class ApplicationController < Sinatra::Base
   use Rack::MethodOverride
   extend ActiveSupport::Inflector
-  logger = Logger.new $stdout
+  register Sinatra::Flash
+  include Error
+  enable :sessions
+
+  @logger = Logger.new $stdout
 
   configure do
     set :jwt_secret, secret: ENV["JWT_SECRET"]
@@ -24,11 +30,6 @@ class ApplicationController < Sinatra::Base
       File.dirname(__FILE__)
     )
   }
-
-  before do
-    logger.info session[:current_user]
-    @errors = []
-  end
 
   # Sets or gets the base name for a class
   def self.base_name(name = nil)
