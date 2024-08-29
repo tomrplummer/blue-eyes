@@ -23,15 +23,15 @@ class UsersController < ApplicationController
     result = user_service.show_user
 
     return error_response(result[:error]) do
-      recover Error.access_denied do
+      recover Err.access_denied do
         haml :access_denied
       end
-      recover Error.not_found do
+      recover Err.not_found do
         @user = result[:user]
         flash[:error] = result[:message]
         haml :users_edit
       end
-      recover Error.server_error do
+      recover Err.server_error do
         haml :error
       end
     end if result[:error]
@@ -52,7 +52,7 @@ class UsersController < ApplicationController
     redirect "/login" if result[:success]
 
     @user = User.new(username: params[:username])
-    flash[:error] = result[:error]
+    flash[:error] = result[:message]
     haml :users_new
   end
 
@@ -61,8 +61,8 @@ class UsersController < ApplicationController
     result = user_service.update_user
 
     return error_response(result[:error]) do
-      recover Error.access_denied do haml :access_denied end
-      recover Error.server_error do haml :error end
+      recover Err.access_denied do haml :access_denied end
+      recover Err.server_error do haml :error end
       recover(:rest) do
         @user = User.new User.permitted(params)
         flash[:error] = result[:message]

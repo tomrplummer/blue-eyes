@@ -3,13 +3,13 @@ require "sinatra/reloader" if development?
 require "sinatra/flash"
 require "logger"
 require "active_support"
-require_relative "../services/error"
+require_relative "../../helpers/error"
 
 class ApplicationController < Sinatra::Base
   use Rack::MethodOverride
   extend ActiveSupport::Inflector
   register Sinatra::Flash
-  include Error
+  include Err
   enable :sessions
 
   @logger = Logger.new $stdout

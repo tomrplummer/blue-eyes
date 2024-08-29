@@ -28,20 +28,20 @@ class UsersService
       {success: true, user: user}
     rescue
       {
-        error: Error.server_error,
+        error: Err.server_error,
         message: "Unable able to create user."
       }
     end
   end
 
   def show_user
-    return {error: Error.access_denied} unless has_access?
+    return {error: Err.access_denied} unless has_access?
     begin
       @user = User.find(id: @id)
       if @user.nil?
         user = User.new
         return {
-          error: Error.not_found,
+          error: Err.not_found,
           message: "User not found",
           user: user
         }
@@ -50,15 +50,15 @@ class UsersService
       return {success: true, user: @user}
     rescue => e
       puts e
-      {error: Error.server_error, message: e}
+      {error: Err.server_error, message: e}
     end
   end
 
   def update_user
-    return {error: Error.access_denied} unless has_access?
+    return {error: Err.access_denied} unless has_access?
     begin
       user = User.find(id: @id)
-      return {error: Error.not_found} if user.nil?
+      return {error: Err.not_found} if user.nil?
 
       new_params = {full_name: @params[:full_name]}
 
@@ -79,7 +79,7 @@ class UsersService
       result = user.update User.permitted(new_params)
       {success: true}
     rescue => e
-      {error: Error.server_error, message: e}
+      {error: Err.server_error, message: e}
     end
   end
 
@@ -94,15 +94,15 @@ class UsersService
   end
 
   def validate_username
-    return {error: Error.invalid_username, message: "Username cannot be blank."} if @username.nil? || @username == ""
+    return {error: Err.invalid_username, message: "Username cannot be blank."} if @username.nil? || @username == ""
     user = User.find(username: @username)
-    return {error: Error.username_in_use, message: "Username in use."} unless user.nil?
+    return {error: Err.username_in_use, message: "Username in use."} unless user.nil?
   end
 
   def validate_password
     if @password.length < 8
       return {
-        error: Error.invalid_password,
+        error: Err.invalid_password,
         message: password_requirements
       }
     end
@@ -115,7 +115,7 @@ class UsersService
 
     if complexity_score < 3
       return {
-        error: Error.invalid_password,
+        error: Err.invalid_password,
         message: password_requirements
       }
     end
