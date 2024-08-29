@@ -1,6 +1,6 @@
-require "haml"
-require "bcrypt"
-require "logger"
+require 'haml'
+require 'bcrypt'
+require 'logger'
 
 class UsersController < ApplicationController
   # get '/users' do
@@ -11,30 +11,23 @@ class UsersController < ApplicationController
   #   end
   # end
 
-  get "/signup" do
+  get '/signup' do
     @user = User.new
     haml :users_new
   end
 
-  get "/user/profile/:id" do |id|
-    #return access_denied unless user_has_access
-    user_service = UsersService.new(id: id, current_user: current_user)
+  get '/user/profile/:id' do |id|
+    user_service = UsersService.new(id:, current_user:)
 
     result = user_service.show_user
 
-    return error_response(result[:error]) do
-      recover Err.access_denied do
-        haml :access_denied
-      end
-      recover Err.not_found do
+    error_response(result[:error]) do
+      recover :rest do
         @user = result[:user]
         flash[:error] = result[:message]
         haml :users_edit
       end
-      recover Err.server_error do
-        haml :error
-      end
-    end if result[:error]
+    end
 
     @user = result[:user]
 
@@ -44,42 +37,44 @@ class UsersController < ApplicationController
     end
   end
 
-  post "/user" do
-    user_service = UsersService.new(params: params)
+  post '/user' do
+    user_service = UsersService.new(params:)
     result = user_service.create_user
 
-    flash[:notice] = "Account created"
-    redirect "/login" if result[:success]
+    error_response result[:error] do
+      recover :rest, 422 do
+        @user = User.new(username: params[:username])
+        flash[:error] = result[:message]
+        haml :users_new
+      end
+    end
 
-    @user = User.new(username: params[:username])
-    flash[:error] = result[:message]
-    haml :users_new
+    flash[:notice] = 'Account created'
+    redirect '/login' if result[:success]
   end
 
-  put "/user/profile/:id" do |id|
-    user_service = UsersService.new(id: id, params: params, current_user: current_user)
+  put '/user/profile/:id' do |id|
+    user_service = UsersService.new(id:, params:, current_user:)
     result = user_service.update_user
 
-    return error_response(result[:error]) do
-      recover Err.access_denied do haml :access_denied end
-      recover Err.server_error do haml :error end
-      recover(:rest) do
+    error_response(result[:error]) do
+      recover :rest do
         @user = User.new User.permitted(params)
         flash[:error] = result[:message]
         redirect "/user/profile/#{id}"
       end
-    end if result[:error]
+    end
 
-    flash[:notice] = "User updated"
+    flash[:notice] = 'User updated'
     redirect "/user/profile/#{id}"
   end
 
-  delete "/user/:id" do |id|
+  delete '/user/:id' do |id|
     return access_denied unless user_has_access
 
     user = User.find(id:)
     user.destroy
-    redirect "/"
+    redirect '/'
   end
 
   private
