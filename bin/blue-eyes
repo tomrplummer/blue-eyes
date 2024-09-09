@@ -37,6 +37,7 @@ class GenerateSubcommand < Thor
   desc 'scaffold <Name> [options]',
        'Generate models, views, controllers and migrations for Sinatra/Sequel/haml'
   def scaffold(name)
+    puts "Warning: --as maybe not work as expected if another resource will 'belong to' this resource" if options[:as]
     generate_scaffold name, options
   end
 
