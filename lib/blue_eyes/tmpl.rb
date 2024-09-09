@@ -2,7 +2,7 @@ require_relative 'routes'
 require_relative 'txt'
 module BlueEyes
   module Tmpl
-    extend Routes
+    include Routes
     include TXT
     def bundle_config
       <<~TEMPLATE
@@ -67,7 +67,7 @@ module BlueEyes
 
     def index_action(class_name, options)
       <<~TEMPLATE
-        get :index do
+        get "#{get_resources class_name, options}" do
             #{db_call class_name, options[:belongs_to], :index}
             haml :#{snake_case class_name}_index
           end
@@ -76,7 +76,7 @@ module BlueEyes
 
     def new_action(class_name, options)
       <<~TEMPLATE
-        get :new do
+        get "#{new_resource class_name, options}" do
             #{db_call class_name, options[:belongs_to], :new}
             haml :#{snake_case class_name}_new
           end
@@ -85,7 +85,7 @@ module BlueEyes
 
     def show_action(class_name, options)
       <<~TEMPLATE
-        get :show do |id|
+        get "#{get_resource class_name, options}" do |id|
             #{db_call class_name, options[:belongs_to], :show}
             haml :#{snake_case class_name}_show
           end
@@ -94,7 +94,7 @@ module BlueEyes
 
     def edit_action(class_name, options)
       <<~TEMPLATE
-        get :edit do |id|
+        get "#{edit_resource class_name, options}" do |id|
             #{db_call class_name, options[:belongs_to], :edit}
             haml :#{snake_case class_name}_edit
           end
@@ -103,7 +103,7 @@ module BlueEyes
 
     def create_action(class_name, options)
       <<~TEMPLATE
-        post :create do
+        post "#{post_resource class_name, options}" do
             #{db_call class_name, options[:belongs_to], :create}
             redirect "/#{redirect_name class_name, options}/\#{#{options[:instance_var_singular]}[:id]}"
           end
@@ -112,7 +112,7 @@ module BlueEyes
 
     def update_action(class_name, options)
       <<~TEMPLATE
-        put :update do |id|
+        put "#{put_resource class_name, options}" do |id|
             #{db_call class_name, options[:belongs_to], :update}
             #{options[:instance_var_singular]}.update #{options[:model_name]}.permitted(params)
             redirect "/#{redirect_name class_name, options}/\#{params[:id]}"
@@ -122,7 +122,7 @@ module BlueEyes
 
     def destroy_action(class_name, options)
       <<~TEMPLATE
-        delete :destroy do |id|
+        delete "#{delete_resource class_name, options}" do |id|
             #{options[:instance_var_singular]} = #{options[:model_name]}.find(:id => id)
             #{options[:instance_var_singular]}.destroy
             redirect "/#{redirect_name class_name, options}"
@@ -152,10 +152,6 @@ module BlueEyes
         require "haml"
 
         class #{class_name_plural}Controller < ApplicationController
-          base_name :#{snake_case(class_name).to_sym}
-          belongs_to #{options[:belongs_to] ? ':' + snake_case(options[:belongs_to]) : 'nil'}
-          as #{options[:as] ? ':' + plural(snake_case(options[:as])) : 'nil'}
-
           #{options[:only].include?(:index) ? index_action(class_name, options) : "\# :index not created\n"}
           #{options[:only].include?(:new) ? new_action(class_name, options) : "\# :new not created\n"}
           #{options[:only].include?(:show) ? show_action(class_name, options) : "\# :show not created\n"}
