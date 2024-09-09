@@ -1,22 +1,21 @@
-%html{:data => {:theme => 'night'}}
+%html.text-gray-700.bg-white
   %head
-    %link{:href => "/stylesheets/application.css", :rel=>"stylesheet"}
-    -# %link{href:"https://cdn.jsdelivr.net/npm/daisyui@3.7.3/dist/full.css", rel:"stylesheet", type:"text/css"}
-    -# %link{:href => "/stylesheets/milligram.css", :rel=>"stylesheet"}
-    %link{:href => "/stylesheets/custom.css", :rel=>"stylesheet"}
+    %link{href: "/stylesheets/application.css", rel: "stylesheet"}
+    %link{href: "/stylesheets/custom.css", rel: "stylesheet"}
 
 
   %body
-    %div.flex.space-between.bg-base-100.shadow-md.mb-8
-      %div.flex-1
-        %a.button.btn.btn-ghost.text-xl{:href => "/"}= "Site"
-      %div.flex-none
-        %div.flex.flex-row.items-center
-          - if current_user
-            %a.link{:href => "/user/profile/#{current_user[:id]}"}= current_user[:full_name] || current_user[:username]
-          %a.link{href: "/login"}= "Login" if current_user.nil?
-          %button.btn.btn-square.btn-ghost
-            %svg{xmlns:"http://www.w3.org/2000/svg", fill:"none",viewBox:"0 0 24 24",class:"inline-block w-5 h-5 stroke-current"}
-              %path{:"stroke-linecap" => "round", :"stroke-linejoin" => "round", :"stroke-width" => "2", :d => "M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"}
-    %div.responsive-container
-      != yield
+    %div.grid{class: "grid-rows-[4rem_1fr]"}
+      %div.bg-blue-400.border-b.border-b.border-blue-500.shadow-sm.text-white.grid.grid-cols-2.px-8.py-4.items-center
+        %div
+          %a.text-2xl{href: "/"}= "Site"
+        %div
+          %div.flex.justify-end
+            - if current_user
+              %a.flex.gap-2{href: "/user/profile/#{current_user[:id]}"}
+                %svg{xmlns:"http://www.w3.org/2000/svg",fill:"none",viewBox:"0 0 24 24",stroke_width:"1.5",stroke:"currentColor",class:"size-6"}
+                  %path{stroke_linecap:"round",stroke_linejoin:"round",d:"M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"}
+                = current_user[:full_name] || current_user[:username]
+            %a{href: "/login"}= "Login" if current_user.nil?
+      %div.p-8
+        != yield

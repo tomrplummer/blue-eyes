@@ -22,6 +22,14 @@ class UsersController < ApplicationController
     result = user_service.show_user
 
     error_response(result[:error]) do
+      recover Err.not_found do
+        flash[:error] = result[:message]
+        redirect "/"
+      end
+      recover Err.unauthorized do
+        flash[:error] = result[:message]
+        redirect "/login"
+      end
       recover :rest do
         @user = result[:user]
         flash[:error] = result[:message]
@@ -42,7 +50,7 @@ class UsersController < ApplicationController
     result = user_service.create_user
 
     error_response result[:error] do
-      recover :rest, 422 do
+      recover :rest do
         @user = User.new(username: params[:username])
         flash[:error] = result[:message]
         haml :users_new
@@ -75,16 +83,5 @@ class UsersController < ApplicationController
     user = User.find(id:)
     user.destroy
     redirect '/'
-  end
-
-  private
-
-  def access_denied
-    status 401
-    haml :access_denied
-  end
-
-  def user_has_access
-    !current_user.nil? && current_user[:id] == params[:id].to_i
   end
 end

@@ -35,10 +35,13 @@ class UsersService
   end
 
   def show_user
-    return {error: Err.access_denied} unless has_access?
+    access_error = check_access
+    return access_error if access_error
+
     begin
-      @user = User.find(id: @id)
-      if @user.nil?
+      user = User.find(id: @id)
+      puts "@USER: #{user}"
+      if user.nil?
         user = User.new
         return {
           error: Err.not_found,
@@ -47,7 +50,7 @@ class UsersService
         }
       end
 
-      return {success: true, user: @user}
+      return {success: true, user: user}
     rescue => e
       puts e
       {error: Err.server_error, message: e}
@@ -55,7 +58,9 @@ class UsersService
   end
 
   def update_user
-    return {error: Err.access_denied} unless has_access?
+    access_error = check_access
+    return access_error if access_error
+
     begin
       user = User.find(id: @id)
       return {error: Err.not_found} if user.nil?
@@ -94,15 +99,15 @@ class UsersService
   end
 
   def validate_username
-    return {error: Err.invalid_username, message: "Username cannot be blank."} if @username.nil? || @username == ""
+    return {error: Err.unproccessable_entity, message: "Username cannot be blank."} if @username.nil? || @username == ""
     user = User.find(username: @username)
-    return {error: Err.username_in_use, message: "Username in use."} unless user.nil?
+    return {error: Err.unproccessable_entity, message: "Username in use."} unless user.nil?
   end
 
   def validate_password
     if @password.length < 8
       return {
-        error: Err.invalid_password,
+        error: Err.unproccessable_entity,
         message: password_requirements
       }
     end
@@ -115,13 +120,14 @@ class UsersService
 
     if complexity_score < 3
       return {
-        error: Err.invalid_password,
+        error: Err.unproccessable_entity,
         message: password_requirements
       }
     end
   end
 
-  def has_access?
-    @current_user && @id && @current_user[:id] == @id.to_i
+  def check_access
+    return {error: Err.unauthorized, message: "Not logged in"} unless @current_user
+    return {error: Err.access_denied, message: "You do not have access to the page"} unless @id && @current_user[:id] == @id.to_i
   end
 end

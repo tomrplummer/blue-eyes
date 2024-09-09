@@ -19,13 +19,13 @@ module RouteBuilder
       path + "/#{resource_as}"
     end
 
-    Paths.define_method :"post_#{resource.singularize}_path" do |args = nil|
+    Paths.define_method :"create_#{resource.singularize}_path" do |args = nil|
       path = ''
       path += "/#{options[:belongs_to]}/#{args[:id]}" if options && options[:belongs_to]
       path + "/#{resource_as}"
     end
 
-    Paths.define_method :"post_#{resource.singularize}_route" do
+    Paths.define_method :"create_#{resource.singularize}_route" do
       path = ''
       path += "/#{options[:belongs_to]}/:#{options[:belongs_to].to_s.singularize}_id" if options && options[:belongs_to]
       path + "/#{resource_as}"

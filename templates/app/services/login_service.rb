@@ -15,14 +15,12 @@ class LoginService
         token = generate_token(user)
         {success: true, token: token, user: user, status: 200}
       else
-        {success: false, errors: ["Invalid username or password"], status: 401}
+        {message: "Invalid username or password", error: Err.unproccessable_entity}
       end
     rescue => err
       {
-        success: false,
-        errors: ["An error occurred during login. Please try again later."],
-        exception: err,
-        status: 500
+        error: Err.server_error,
+        message: err
       }
     end
   end
