@@ -226,11 +226,12 @@ module BlueEyes
       TEMPLATE
     end
 
-    def path_config_toml(name, as_name = nil)
+    def path_config_toml(name, as_name = nil, belongs_to = nil)
       <<~TEMPLATE
         [[resources]]
         name = "#{name}"
-        #{as_name ? "as = \"#{as_name}\"" : ''}
+        #{"as = \"#{as_name}\"" if as_name}
+        #{"belongs_to = \"#{belongs_to}\"" if belongs_to}
 
       TEMPLATE
     end

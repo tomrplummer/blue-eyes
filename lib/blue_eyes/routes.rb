@@ -1,7 +1,21 @@
 require 'active_support/core_ext/string/inflections'
+require "toml-rb"
 
 module BlueEyes
   module Routes
+    @config_loaded = false
+
+    def load_config
+      return if @config_loaded
+      @as_lookup ||= {}
+      config = TomlRB.load_file(File.expand_path('./helpers/paths_config.toml'))
+      config["resources"].each do |resource|
+        @as_lookup[resource["name"]] = resource["as"] || resource["name"]
+      end
+
+      @config_loaded = true
+    end
+
     def get_resources(name, options = {})
       resource_name, belongs_to, stub = handle_options name, options
 
@@ -59,11 +73,11 @@ module BlueEyes
     end
 
     def base_route(belongs_to, stub)
+      load_config
       route = ''
-      return "/#{belongs_to}/:#{stub}_id" if belongs_to
+      return "/#{@as_lookup[belongs_to]}/:#{stub}_id" if belongs_to
 
       ''
     end
   end
 end
-

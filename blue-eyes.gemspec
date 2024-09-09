@@ -24,6 +24,7 @@ Gem::Specification.new do |spec|
   # Runtime dependencies
   spec.add_runtime_dependency "thor"
   spec.add_runtime_dependency "activesupport"
+  spec.add_runtime_dependency "toml-rb"
 
   # Development dependencies
   spec.add_development_dependency "rake"

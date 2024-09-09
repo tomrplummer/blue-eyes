@@ -8,13 +8,19 @@ module PathsHelper
   def self.run
     config = TomlRB.load_file(File.expand_path('./helpers/paths_config.toml'))
 
+    as_lookup = {}
+
     unless config["resources"].nil?
       config["resources"].each do |resource|
-        if resource["as"].nil?
-          resources resource["name"].to_sym
-        else
-          resources resource["name"].to_sym, :as => resource["as"].to_sym
-        end
+        as_lookup[resource["name"]] = resource["as"] || resource["name"]
+      end
+      puts "lookup #{as_lookup}"
+      config["resources"].each do |resource|
+        #if resource["as"].nil?
+        #resources resource["name"].to_sym
+          #else
+        resources resource["name"].to_sym, :as => (resource["as"] ? resource["as"].to_sym : nil), :belongs_to => (resource["belongs_to"] ? as_lookup[resource["belongs_to"]] : nil)
+          #end
       end
     end
 

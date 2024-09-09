@@ -10,7 +10,7 @@ module BlueEyes
         create_directories
         write_model_file(table_name)
         write_migration_file(snake_name, options[:fields])
-        update_paths_config(snake_name, options[:as])
+        update_paths_config(snake_name, options[:as], options[:belongs_to])
 
         #generate_controller(name, options)
       end
@@ -36,10 +36,10 @@ module BlueEyes
         File.write(Paths.migrations(file_name), migration_t(snake_name, fields))
       end
 
-      def update_paths_config(snake_name, alias_name)
+      def update_paths_config(snake_name, alias_name, belongs_to)
         paths_config_path = Paths.helpers('paths_config.toml')
         paths_config = File.read(paths_config_path)
-        new_resource = path_config_toml(snake_name, alias_name)
+        new_resource = path_config_toml(snake_name, alias_name, belongs_to)
 
         updated_config = paths_config ? paths_config + new_resource : new_resource
         File.write(paths_config_path, updated_config)

@@ -24,7 +24,7 @@ RSpec.describe BlueEyes::Actions::Scaffold do
       expect(self).to receive(:create_directories)
       expect(self).to receive(:write_model_file).with(table_name)
       expect(self).to receive(:write_migration_file).with(snake_name, options[:fields])
-      expect(self).to receive(:update_paths_config).with(snake_name, options[:as])
+      expect(self).to receive(:update_paths_config).with(snake_name, options[:as], options[:belongs_to])
       expect(self).to receive(:generate_controller).with(name, options)
 
       generate_scaffold(name, options)
@@ -74,7 +74,7 @@ RSpec.describe BlueEyes::Actions::Scaffold do
       paths_config_path = BlueEyes::Paths.helpers("paths_config.toml")
       expect(File).to receive(:read).with(paths_config_path)
       expect(File).to receive(:write).with(paths_config_path, anything)
-      update_paths_config(snake_name, options[:as])
+      update_paths_config(snake_name, options[:as], options[:belongs_to])
     end
   end
 end
